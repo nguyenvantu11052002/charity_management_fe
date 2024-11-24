@@ -21,14 +21,8 @@
 
 <script setup>
 const props = defineProps(['label', 'type', 'style', 'placeholder', 'min', 'max', 'step'])
-// const props = defineProps()
-// import { defineModel } from 'vue'
 
 const data = defineModel('data')
-// const label = defineModel('label')
-// const placeholder = defineModel('placeholder')
-// const type = defineModel('type')
-// const style = defineModel('style')
 const error = defineModel('error')
 const readonly = defineModel('readonly')
 </script>

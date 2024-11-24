@@ -4,10 +4,18 @@
       class="bg-white border-gray-200 shadow-lg border rounded-lg flex flex-col w-full p-10 justify-start gap-4"
       @submit.prevent="handleSave()"
     >
-      <div class="flex flex-col items-center justify-center">
-        <avatar-icon :width="'100px'" :height="'100px'"></avatar-icon>
-        <img src="" />
-        <input type="file" @change="onFileChange" />
+      <div>
+        <label class="text-sm font-semibold">Ảnh chủ đề</label>
+        <div class="mt-2">
+          <div
+            class="w-64 h-64 border bg-gray-200 text-center flex justify-center items-center text-gray-500"
+            v-if="!previewImage"
+          >
+            Vui lòng chọn ảnh
+          </div>
+          <img v-else :src="previewImage" class="w-80 h-80 object-cover" />
+          <input type="file" @change="onFileChange" class="mt-4" />
+        </div>
       </div>
       <base-input
         :label="'Tiêu đề'"
@@ -44,6 +52,7 @@
         v-model:data="campaign.startTime"
         v-model:error="error.startTime"
       ></base-input>
+      {{ campaign.startTime }}
       <base-input
         :label="'Ngày dự kiến kết thúc'"
         :type="'date'"
@@ -52,34 +61,7 @@
         v-model:data="campaign.endTime"
         v-model:error="error.endTime"
       ></base-input>
-      <!-- <div class="flex gap-4 md:gap-8 justify-between flex-col md:flex-row md:justify-start">
-        <base-select
-          :mainTitle="'Giới tính'"
-          :options="['Nam', 'Nữ']"
-          :containerStyle="'flex flex-col w-20'"
-          :titleStyle="'text-sm font-semibold'"
-          :selectStyle="'rounded-md border-2 border-solid  h-10 px-3 mt-2 focus:outline-pink-300 items-fit'"
-          v-model:model="user.gender"
-        >
-        </base-select>
-        <div class="flex flex-col">
-          <label class="text-sm font-semibold">Roles</label>
-          <span class="text-red-500 text-xs">{{ error.roles }}</span>
-
-          <base-check-box
-            v-for="role in roles"
-            :key="role.id"
-            :label="role.name"
-            :value="role"
-            :containerStyle="'flex justify-between gap-2 w-32 '"
-            :labelStyle="'text-md '"
-            :checkboxStyle="'w-5 accent-indigo-500'"
-            v-model:data="user.roles"
-            v-model:error="error.roles"
-          ></base-check-box>
-        </div>
-      </div> -->
-
+      {{ campaign.endTime }}
       <base-button
         :type="'submit'"
         :content="'Lưu'"
@@ -92,7 +74,6 @@
 <script setup>
 import BaseButton from '@/components/BaseButton.vue'
 import BaseInput from '@/components/BaseInput.vue'
-import AvatarIcon from '@/components/icons/AvatarIcon.vue'
 // import BaseCheckBox from '@/components/BaseCheckBox.vue'
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -110,8 +91,8 @@ const campaign = ref({
   shortDescription: '',
   content: '',
   category: '',
-  startTime: '',
-  endTime: '',
+  startTime: formatDate(new Date()),
+  endTime: formatDate(new Date()),
   currentStatus: '',
   creator: '',
 })
@@ -128,53 +109,30 @@ const error = ref({
   currentStatus: '',
   creator: '',
 })
+const previewImage = ref()
 
-// getUserById()
-// getRoles()
-// async function getUserById() {
-//   userRepository
-//     .getById(route.params.id)
-//     .then((response) => {
-//       console.log(response)
-//       user.value = response.data
-//     })
-//     .catch((err) => {
-//       console.log(err)
-//     })
-//   console.log(route.params.id)
-// }
-// async function getRoles() {
-//   roleRepository
-//     .getAll('')
-//     .then((response) => {
-//       console.log(response)
-//       roles.value = response.data.content
-//     })
-//     .catch((err) => {
-//       console.log(err)
-//     })
-// }
-
-// function onFileChange(e) {
-//       var files = e.target.files || e.dataTransfer.files;
-//       if (!files.length)
-//         return;
-//       createImage(files[0]);
-// }
-// function  createImage(file) {
-//       var image = new Image();
-//       var reader = new FileReader();
-
-//       reader.onload = (e) => {
-//         vm.image = e.target.result;
-//       };
-//       reader.readAsDataURL(file);
-// }
+const onFileChange = (event) => {
+  const file = event.target.files[0] // Lấy tệp đầu tiên từ input
+  previewImage.value = URL.createObjectURL(file)
+  campaign.value.image = file
+  console.log(previewImage.value)
+}
 
 async function handleSave() {
   resetError()
   campaignRepository
-    .create(campaign.value)
+    .create({
+      title: campaign.value.title,
+      image: campaign.value.image,
+      fundraisingGoal: campaign.value.fundraisingGoal,
+      shortDescription: campaign.value.shortDescription,
+      content: campaign.value.content,
+      category: campaign.value.category,
+      startTime: formatDateTime(campaign.value.startTime),
+      endTime: formatDateTime(campaign.value.endTime),
+      currentStatus: campaign.value.currentStatus,
+      creator: campaign.value.creator,
+    })
     .then((response) => {
       console.log(response)
       campaign.value = response.data
@@ -186,6 +144,18 @@ async function handleSave() {
     .catch((err) => {
       const response = err.response.data.errors
       console.log(response)
+      error.value.title = response.title
+      error.value.image = response.image
+      error.value.fundraisingGoal = response.fundraisingGoal
+      error.value.shortDescription = response.shortDescription
+      error.value.content = response.content
+      error.value.category = response.category
+      error.value.startTime = response.startTime
+      error.value.endTime = response.endTime
+      error.value.currentStatus = response.currentStatus
+      error.value.creator = response.creator
+      error.value.startTime = response.CAMPAIGN_START_TIME_INVALID
+      error.value.endTime = response.CAMPAIGN_END_TIME_INVALID
     })
   console.log(route.params.id)
 }
@@ -201,6 +171,23 @@ function resetError() {
   error.value.endTime = ''
   error.value.currentStatus = ''
   error.value.creator = ''
+}
+
+function formatDate(date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+function formatDateTime(date) {
+  const d = new Date(date)
+  const day = String(d.getDate()).padStart(2, '0')
+  const month = String(d.getMonth() + 1).padStart(2, '0') // Tháng bắt đầu từ 0
+  const year = d.getFullYear()
+  // const hours = String(d.getHours()).padStart(2, '0')
+  // const minutes = String(d.getMinutes()).padStart(2, '0')
+  // const seconds = String(d.getSeconds()).padStart(2, '0')
+  return `${day}/${month}/${year} 00:00:00`
 }
 </script>
 

@@ -13,6 +13,7 @@ import CampaignsIcon from './components/icons/CampaignsIcon.vue'
 import DonationsIcon from './components/icons/DonationsIcon.vue'
 import FilterIcon from './components/icons/FilterIcon.vue'
 import RoleIcon from './components/icons/RoleIcon.vue'
+import CategoriesIcon from './components/icons/CategoriesIcon.vue'
 // import HomeIcon from './icons/HomeIcon.vue'
 // import UsersIcon from './icons/UsersIcon.vue'
 // import CampaignsIcon from './icons/CampaignsIcon.vue'
@@ -31,6 +32,7 @@ app
   .component('donations-icon', DonationsIcon)
   .component('filters-icon', FilterIcon)
   .component('role-icon', RoleIcon)
+  .component('categories-icon', CategoriesIcon)
 app.mount('#app')
 
 router.beforeEach((to, from) => {
