@@ -17,6 +17,9 @@ import AdminCreateRoleView from '@/views/admin/AdminCreateRoleView.vue'
 import AdminCampaignsListView from '@/views/admin/AdminCampaignsListView.vue'
 import AdminCampaignDetailView from '@/views/admin/AdminCampaignDetailView.vue'
 import AdminCreateCampaignView from '@/views/admin/AdminCreateCampaignView.vue'
+import AdminCategoriesListView from '@/views/admin/AdminCategoriesListView.vue'
+import AdminCategoryDetailView from '@/views/admin/AdminCategoryDetailView.vue'
+import AdminCreateCategoryView from '@/views/admin/AdminCreateCategoryView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -158,13 +161,42 @@ const router = createRouter({
             parent: 'admin-roles-route',
           },
         },
+        {
+          path: 'categories',
+          name: 'admin-categories-route',
+          component: AdminCategoriesListView,
+          meta: {
+            order: 4,
+            layout: 'admin',
+            title: 'Quản lý danh mục',
+            icon: 'categories',
+          },
+        },
+        {
+          path: 'categories/:id',
+          name: 'admin-category-detail-route',
+          component: AdminCategoryDetailView,
+          meta: {
+            layout: 'admin',
+            parent: 'admin-categories-route',
+          },
+        },
+        {
+          path: 'categories/create',
+          name: 'admin-create-category-route',
+          component: AdminCreateCategoryView,
+          meta: {
+            layout: 'admin',
+            parent: 'admin-categories-route',
+          },
+        },
 
         {
           path: 'campaigns',
           name: 'admin-campaigns-route',
           component: AdminCampaignsListView,
           meta: {
-            order: 4,
+            order: 5,
             layout: 'admin',
             title: 'Quản lý chiến dịch',
             icon: 'campaigns',
@@ -194,7 +226,7 @@ const router = createRouter({
           name: 'admin-donations-route',
           component: AdminDonationsView,
           meta: {
-            order: 5,
+            order: 6,
             layout: 'admin',
             title: 'Quản lý quyên góp',
             icon: 'donations',

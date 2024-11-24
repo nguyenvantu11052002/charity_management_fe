@@ -6,6 +6,11 @@ export default {
       return response.data
     })
   },
+  async create(payload) {
+    return Repository.post(`${resource}`, payload).then((response) => {
+      return response.data
+    })
+  },
   // async getById(id) {
   //   return Repository.get(`${resource}/${id}`).then((response) => {
   //     return response.data
@@ -13,11 +18,6 @@ export default {
   // },
   // async update(id, payload) {
   //   return Repository.put(`${resource}/${id}`, payload).then((response) => {
-  //     return response.data
-  //   })
-  // },
-  // async create(payload) {
-  //   return Repository.post(`${resource}`, payload).then((response) => {
   //     return response.data
   //   })
   // },

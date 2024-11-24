@@ -1,4 +1,5 @@
 import AuthenticationRepository from './AuthenticationRepository'
+import CampaignCategoryRepository from './CampaignCategoryRepository'
 import CampaignRepository from './CampaignRepository'
 import ImageRepository from './ImageRepository'
 // import ErrorCodeRepository from './ErrorCodeRepository'
@@ -15,6 +16,7 @@ const repositories = {
   roles: RoleRepository,
   campaigns: CampaignRepository,
   images: ImageRepository,
+  categories: CampaignCategoryRepository,
   // notifications: NotificationRepository,
 }
 
