@@ -1,21 +1,24 @@
 <template>
-  <div class="mx-2 md:mx-10">
-    <base-table
-      :table-name="'Tất cả người dùng'"
-      :page-size-options="pageSizeOptions"
-      :filterLabel="'Lọc người dùng'"
-      :groupFilters="groupFilters"
-      :createPageLink="'admin-create-user-route'"
-      :detailPageLink="'admin-user-detail-route'"
-      v-model:pageSize="pageSize"
-      v-model:search="search"
-      v-model:filterModel="filterModel"
-      v-model:currentPage="currentPage"
-      v-model:totalPage="totalPage"
-      v-model:totalRecord="totalRecord"
-      v-model:recordProperties="recordProperties"
-      v-model:recordData="recordData"
-    ></base-table>
+  <div class="relative overflow-x-hidden min-h-screen w-full">
+    <div class="flex p-10 gap-8 flex-col md:ml-64 md:mt-10 mt-20">
+      <base-table
+        :table-name="'Tất cả người dùng'"
+        :page-size-options="pageSizeOptions"
+        :filterLabel="'Lọc người dùng'"
+        :groupFilters="groupFilters"
+        :createPageLink="'admin-create-user-route'"
+        :detailPageLink="'admin-user-detail-route'"
+        :table-content-style="'text-start border min-w-full'"
+        v-model:pageSize="pageSize"
+        v-model:search="search"
+        v-model:filterModel="filterModel"
+        v-model:currentPage="currentPage"
+        v-model:totalPage="totalPage"
+        v-model:totalRecord="totalRecord"
+        v-model:recordProperties="recordProperties"
+        v-model:recordData="recordData"
+      ></base-table>
+    </div>
   </div>
 </template>
 
@@ -24,8 +27,24 @@ import BaseTable from '@/components/BaseTable.vue'
 import { RepositoryFactory } from '@/repository/RepositoryFactory'
 import { computed, onBeforeMount, ref, watch } from 'vue'
 const userRepository = RepositoryFactory.get('users')
-const pageSizeOptions = [10, 20, 30]
-const pageSize = ref(pageSizeOptions[0])
+const pageSizeOptions = [
+  {
+    id: 10,
+    title: 10,
+    value: 10,
+  },
+  {
+    id: 20,
+    title: 20,
+    value: 20,
+  },
+  {
+    id: 30,
+    title: 30,
+    value: 30,
+  },
+]
+const pageSize = ref(pageSizeOptions[0].value)
 const search = ref('')
 onBeforeMount(() => {
   getAllUsers('')

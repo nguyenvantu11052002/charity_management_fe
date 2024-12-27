@@ -34,7 +34,7 @@
     </div>
     <!-- End Table Action -->
     <div class="overflow-x-auto border">
-      <table class="lg:min-w-full text-start border min-w-[900px]">
+      <table :class="props.tableContentStyle">
         <thead class="text-start font-semibold text-lg">
           <td v-for="property in recordPropertiesModel" :key="property" class="p-4">
             {{ property }}
@@ -49,9 +49,12 @@
           >
             <td v-for="(k, v) in data" :key="v" class="flex-wrap p-4">
               <div v-if="v == 'image' || v === 'avatar'">
-                <img :src="k" v-if="checkImageURL(k)" class="w-20 h-20 object-contain" />
+                <img :src="k" v-if="checkImageURL(k)" class="w-40 h-40 object-contain" />
                 <!--  -->
-                <div v-else>N/A</div>
+                <div v-else class="w-20 h-20 flex items-center">N/A</div>
+              </div>
+              <div v-else-if="k.name || k.title || k.email">
+                <div>{{ k.name || k.title || k.email }}</div>
               </div>
               <div v-else>{{ k }}</div>
             </td>
@@ -68,7 +71,7 @@
         ></base-pagination>
       </div>
       <div>
-        <span>{{ totalRecordModel }} bản ghi / {{ totalPageModal }} trang</span>
+        <span>Tổng số: {{ totalRecordModel }} bản ghi, {{ totalPageModal }} trang</span>
       </div>
     </div>
   </div>
@@ -106,6 +109,7 @@ const props = defineProps([
   'detailPageLink',
   'filterLabel',
   'groupFilters',
+  'tableContentStyle',
 ])
 
 const checkImageURL = (url) => {

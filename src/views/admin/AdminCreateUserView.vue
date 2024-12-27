@@ -1,78 +1,82 @@
 <template>
-  <div class="mx-4 my-10 md:my-2 shadow-lg md:mx-10">
-    <form
-      class="bg-white border-gray-200 shadow-lg border rounded-lg flex flex-col w-full p-10 justify-start gap-4"
-      @submit.prevent="handleSave()"
-    >
-      <!-- <label-error v-model:error="error"></label-error> -->
-      <!-- <base-input
+  <div class="relative w-screen">
+    <div class="flex p-10 gap-8 flex-col md:ml-64 md:mt-10 mt-20">
+      <form
+        class="bg-white border-gray-200 shadow-lg border rounded-lg flex flex-col w-full p-10 justify-start gap-4"
+        @submit.prevent="handleSave()"
+      >
+        <!-- <label-error v-model:error="error"></label-error> -->
+        <!-- <base-input
         :label="'Id'"
         :type="'text'"
         :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
         v-model:data="user.id"
         :readonly="'true'"
       ></base-input> -->
-      <base-input
-        :label="'Email'"
-        :type="'email'"
-        :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
-        v-model:data="user.email"
-        v-model:error="error.email"
-      ></base-input>
-      <base-input
-        :label="'Password'"
-        :type="'password'"
-        :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
-        v-model:data="user.password"
-        v-model:error="error.password"
-      ></base-input>
-      <base-input
-        :label="'Họ và tên đệm'"
-        :type="'text'"
-        :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
-        v-model:data="user.firstName"
-        v-model:error="error.firstName"
-      ></base-input>
-      <base-input
-        :label="'Tên'"
-        :type="'text'"
-        :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
-        v-model:data="user.lastName"
-        v-model:error="error.lastName"
-      ></base-input>
-      <base-input
-        :label="'Ngày sinh'"
-        :type="'date'"
-        :style="'rounded-md border-2 border-solid  h-10 px-3 mt-2 focus:outline-pink-300'"
-        v-model:data="user.dob"
-        v-model:error="error.dob"
-      ></base-input>
-      <base-input
-        :label="'Điện thoại'"
-        :type="'text'"
-        :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
-        v-model:data="user.phone"
-        v-model:error="error.phone"
-      ></base-input>
-      <base-input
-        :label="'Điạ chỉ'"
-        :type="'text'"
-        :style="'rounded-md border-2 border-solid  h-10 px-3 mt-2 focus:outline-pink-300'"
-        v-model:data="user.address"
-        v-model:error="error.address"
-      ></base-input>
-      <div class="flex gap-4 md:gap-8 justify-between flex-col md:flex-row md:justify-start">
-        <base-select
-          :mainTitle="'Giới tính'"
-          :options="['Nam', 'Nữ']"
-          :containerStyle="'flex flex-col w-20'"
-          :titleStyle="'text-sm font-semibold'"
-          :selectStyle="'rounded-md border-2 border-solid  h-10 px-3 mt-2 focus:outline-pink-300 items-fit'"
-          v-model:model="user.gender"
-        >
-        </base-select>
+        <base-input
+          :label="'Email'"
+          :type="'email'"
+          :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
+          v-model:data="user.email"
+          v-model:error="error.email"
+        ></base-input>
+        <base-input
+          :label="'Password'"
+          :type="'password'"
+          :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
+          v-model:data="user.password"
+          v-model:error="error.password"
+        ></base-input>
+        <base-input
+          :label="'Họ và tên đệm'"
+          :type="'text'"
+          :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
+          v-model:data="user.firstName"
+          v-model:error="error.firstName"
+        ></base-input>
+        <base-input
+          :label="'Tên'"
+          :type="'text'"
+          :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
+          v-model:data="user.lastName"
+          v-model:error="error.lastName"
+        ></base-input>
+        <base-input
+          :label="'Ngày sinh'"
+          :type="'date'"
+          :style="'rounded-md border-2 border-solid  h-10 px-3 mt-2 focus:outline-pink-300'"
+          v-model:data="user.dob"
+          v-model:error="error.dob"
+        ></base-input>
+        <base-input
+          :label="'Điện thoại'"
+          :type="'text'"
+          :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
+          v-model:data="user.phone"
+          v-model:error="error.phone"
+        ></base-input>
+        <base-input
+          :label="'Điạ chỉ'"
+          :type="'text'"
+          :style="'rounded-md border-2 border-solid  h-10 px-3 mt-2 focus:outline-pink-300'"
+          v-model:data="user.address"
+          v-model:error="error.address"
+        ></base-input>
+        <div class="flex gap-4 md:gap-8 justify-between flex-col md:flex-row md:justify-start">
+          <base-select
+            :mainTitle="'Giới tính'"
+            :options="[
+              { id: 'NAM', title: 'Nam', value: 'Nam' },
+              { id: 'NỮ', title: 'Nữ', value: 'Nữ' },
+            ]"
+            :containerStyle="'flex flex-col '"
+            :titleStyle="'text-sm font-semibold'"
+            :selectStyle="'rounded-md border-2 border-solid  h-10 px-3 mt-2 focus:outline-pink-300 items-fit'"
+            v-model:model="user.gender"
+          >
+          </base-select>
 
-        <!-- <base-select
+          <!-- <base-select
           :mainTitle="'Tài khoản bị khóa'"
           :options="['true', 'false']"
           :containerStyle="'flex flex-col w-32'"
@@ -81,30 +85,31 @@
           v-model:model="user.locked"
         >
         </base-select> -->
-        <div class="flex flex-col">
-          <label class="text-sm font-semibold">Roles</label>
-          <span class="text-red-500 text-xs">{{ error.roles }}</span>
+          <div class="flex flex-col">
+            <label class="text-sm font-semibold">Roles</label>
+            <span class="text-red-500 text-xs">{{ error.roles }}</span>
 
-          <base-check-box
-            v-for="role in roles"
-            :key="role.id"
-            :label="role.name"
-            :value="role"
-            :containerStyle="'flex justify-between gap-2 w-32 '"
-            :labelStyle="'text-md '"
-            :checkboxStyle="'w-5 accent-indigo-500'"
-            v-model:data="user.roles"
-            v-model:error="error.roles"
-          ></base-check-box>
+            <base-check-box
+              v-for="role in roles"
+              :key="role.id"
+              :label="role.name"
+              :value="role"
+              :containerStyle="'flex justify-between gap-2 w-32 '"
+              :labelStyle="'text-md '"
+              :checkboxStyle="'w-5 accent-indigo-500'"
+              v-model:data="user.roles"
+              v-model:error="error.roles"
+            ></base-check-box>
+          </div>
         </div>
-      </div>
 
-      <base-button
-        :type="'submit'"
-        :content="'Lưu'"
-        :style="' max-w-64 py-2 font-bold text-sm text-white h-10 bg-green-500 hover:bg-green-600 rounded-md'"
-      ></base-button>
-    </form>
+        <base-button
+          :type="'submit'"
+          :content="'Lưu'"
+          :style="' max-w-64 py-2 font-bold text-sm text-white h-10 bg-green-500 hover:bg-green-600 rounded-md'"
+        ></base-button>
+      </form>
+    </div>
   </div>
 </template>
 

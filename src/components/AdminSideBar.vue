@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex z-30 items-center md:flex-col fixed flex-row justify-between md:justify-start rounded-sm md:bottom-0 top-0 border px-4 gap-4 md:w-64 w-screen shadow-lg bg-white"
+    class="flex z-30 items-center md:flex-col fixed flex-row justify-between md:justify-start rounded-sm md:bottom-0 top-0 border px-4 gap-4 md:w-64 w-full shadow-lg bg-white"
   >
     <app-logo :to="'admin-home-route'" class="py-4"> </app-logo>
     <nav-bar

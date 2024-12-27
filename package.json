@@ -11,11 +11,14 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@tinymce/tinymce-vue": "^6.1.0",
     "axios": "^1.7.7",
     "eslint-config-prettier": "^9.1.0",
     "pinia": "^2.2.6",
+    "sockjs-client": "^1.6.1",
     "vue": "^3.5.12",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "webstomp-client": "^1.2.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",

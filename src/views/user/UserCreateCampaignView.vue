@@ -1,6 +1,17 @@
 <template>
-  <div class="relative w-screen">
-    <div class="flex p-10 gap-8 flex-col md:ml-64 md:mt-10 mt-20">
+  <div class="flex flex-col items-center gap-4 py-20">
+    <base-banner
+      :title="'Tạo chiến dịch'"
+      :content="'Tạo chiến dịch mà bạn muốn thực hiện, chúng tôi sẽ xem xét và thực hiện đăng chiến dịch của bạn lên trang web của chúng tôi'"
+    ></base-banner>
+    <!-- <section class="flex items-center justify-center flex-col w-full py-10">
+      <h1 class="font-bold text-3xl text-pink-600">Tạo chiến dịch</h1>
+      <p class="text-center">
+        Tạo chiến dịch mà bạn muốn thực hiện, chúng tôi sẽ xem xét và thực hiện đăng chiến dịch của
+        bạn lên trang web của chúng tôi
+      </p>
+    </section> -->
+    <section class="flex w-full max-w-screen-xl gap-4 mt-4 flex-wrap justify-center">
       <form
         class="bg-white border-gray-200 shadow-lg border rounded-lg flex flex-col w-full p-10 justify-start gap-4"
         @submit.prevent="handleSave()"
@@ -24,15 +35,15 @@
               class="w-full h-96 border bg-gray-200 text-center flex justify-center items-center text-gray-500"
               v-else
             >
-              <img :src="currentPreviewImage.url" class="w-full max-w-5xl lg:h-96 object-cover" />
+              <img :src="currentPreviewImage.url" class="w-full lg:h-96 object-cover" />
             </div>
-
             <div class="w-full mt-2 gap-2 flex flex-wrap">
               <div
                 class="w-24 h-24 cursor-pointer relative group"
                 v-for="image in campaign.images"
                 :key="image"
                 :class="image == currentPreviewImage ? 'border-4 border-pink-500' : ''"
+                @focus="isShowDelete"
               >
                 <!-- <span
                   class="absolute bottom-0 left-0 right-0 h-1/2 bg-black/70 opacity-0 transition-opacity group-hover:opacity-100"
@@ -44,7 +55,9 @@
                 >
                   Xóa
                 </button>
+
                 <!-- Nút xóa -->
+
                 <img
                   :src="image.url"
                   class="w-full h-full object-cover"
@@ -152,7 +165,7 @@
           @click="handleSave"
         ></base-button>
       </form>
-    </div>
+    </section>
   </div>
 </template>
 
@@ -166,6 +179,7 @@ import { onBeforeMount, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { RepositoryFactory } from '@/repository/RepositoryFactory'
 import ImageRepository from '@/repository/ImageRepository'
+import BaseBanner from '@/components/BaseBanner.vue'
 // const router = useRouter()
 onBeforeMount(() => {
   getAllCategories()
@@ -178,10 +192,11 @@ const categoryRepository = RepositoryFactory.get('categories')
 const imageRepository = ImageRepository
 const campaignImageRepository = RepositoryFactory.get('campaignImages')
 
+const editorRef = ref()
 const handleEditorInit = (evt, editor) => {
   editorRef.value = editor
 }
-const editorRef = ref()
+
 const campaign = ref({
   id: '',
   title: '',
@@ -210,6 +225,31 @@ const error = ref({
   currentStatus: '',
   creator: '',
 })
+const currentPreviewImage = ref()
+
+const fileInput = ref('')
+const onFileChange = (event) => {
+  const newImage = event.target.files[0]
+  console.log(newImage) // Lấy tệp đầu tiên từ input
+
+  const img = {
+    fileName: newImage.name,
+    file: newImage,
+    url: URL.createObjectURL(newImage),
+  }
+
+  const existingImages = campaign.value.images.filter((image) => image.fileName === img.fileName)
+  if (existingImages.length > 0) {
+    console.log('Image with the same name already exists:', existingImages)
+  } else {
+    handleUploadImage(img)
+  }
+}
+
+function addMoreImage() {
+  fileInput.value.click()
+}
+
 const isUploadingImage = ref(false)
 
 function onClickDeleteImage(imageToDelete) {
@@ -225,6 +265,24 @@ function onClickDeleteImage(imageToDelete) {
     .catch((err) => {
       console.log(err)
     })
+}
+
+function addImageToEdt() {
+  console.log(campaign.value.images)
+  for (const img of campaign.value.images) {
+    editorRef.value.insertContent(`
+      <img id="${img.id}" src="${img.url}"  />
+    `)
+    console.log(`
+      <img id="${img.id}" src="${img.url}"  />
+    `)
+  }
+}
+function deleteImageOfContent(image) {
+  const img = editorRef.value.dom.get(image.id)
+  if (img) {
+    img.remove()
+  }
 }
 
 async function handleUploadImage(image) {
@@ -256,37 +314,6 @@ async function handleUploadImage(image) {
     })
 }
 
-function addImageToEdt() {
-  console.log(campaign.value.images)
-  for (const img of campaign.value.images) {
-    editorRef.value.insertContent(`
-      <img id="${img.id}" src="${img.url}"  />
-    `)
-    console.log(`
-      <img id="${img.id}" src="${img.url}"  />
-    `)
-  }
-  // console.log(editorRef.value)
-  // const img = `<img src = "${url}">`
-}
-
-function deleteImageOfContent(image) {
-  const img = editorRef.value.dom.get(image.id)
-  if (img) {
-    img.remove()
-  }
-}
-
-const currentPreviewImage = ref()
-
-const fileInput = ref('')
-
-function handleRightClickImage() {}
-
-function addMoreImage() {
-  fileInput.value.click()
-}
-
 async function getAllCategories() {
   categoryRepository
     .getAll('')
@@ -305,24 +332,6 @@ async function getAllCategories() {
     })
 }
 
-const onFileChange = (event) => {
-  const newImage = event.target.files[0]
-  console.log(newImage) // Lấy tệp đầu tiên từ input
-
-  const img = {
-    fileName: newImage.name,
-    file: newImage,
-    url: URL.createObjectURL(newImage),
-  }
-
-  const existingImages = campaign.value.images.filter((image) => image.fileName === img.fileName)
-  if (existingImages.length > 0) {
-    console.log('Image with the same name already exists:', existingImages)
-  } else {
-    handleUploadImage(img)
-  }
-}
-
 async function handleSave() {
   resetError()
   const haveError = validateCampaign()
@@ -338,8 +347,8 @@ async function handleSave() {
       })
       .then((response) => {
         router.replace({
-          name: 'admin-campaign-detail-route',
-          params: { id: `${campaign.value.id}` },
+          name: 'home-route',
+          // params: { id: `${campaign.value.id}` },
         })
       })
       .catch((err) => {
@@ -416,9 +425,7 @@ function formatDate(date) {
   const day = String(date.getDate()).padStart(2, '0')
   const month = String(date.getMonth() + 1).padStart(2, '0') // Tháng bắt đầu từ 0
   const year = date.getFullYear()
-  // const hours = String(d.getHours()).padStart(2, '0')
-  // const minutes = String(d.getMinutes()).padStart(2, '0')
-  // const seconds = String(d.getSeconds()).padStart(2, '0')
+
   return `${year}-${month}-${day}`
 }
 </script>

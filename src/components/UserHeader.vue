@@ -1,11 +1,13 @@
 <template>
-  <header class="flex items-center w-full py-6 shadow-lg md:px-8 px-4 gap-4 bg-white">
+  <header
+    class="flex fixed z-10 items-center w-full py-6 shadow-lg md:px-8 px-4 gap-4 bg-white max-h-20"
+  >
     <app-logo :to="'home-route'" class="lg:basis-1/5 text-4xl basis-2/5"></app-logo>
     <nav-bar
       :routes="userRoutes"
       :activeRoute="activeRoute"
       :changeRoute="changeActiveRoute"
-      :navStyle="'flex gap-8'"
+      :navStyle="'flex gap-8 '"
       :navItemStyle="'text-lg font-bold'"
       class="basis-3/5 justify-center hidden lg:flex"
     ></nav-bar>
@@ -30,7 +32,7 @@
         :class="userInfor ? 'flex' : 'hidden'"
       >
         <base-link
-          :to="'home-route'"
+          :to="'user-detail-route'"
           :title="userInfor.email"
           :defaultStyle="'bg-white text-black justify-center'"
         ></base-link>
@@ -128,9 +130,15 @@ export default {
     const allRoute = router.getRoutes()
     const LocalStorageRepository = RepositoryFactory.get('localStorage')
 
-    const userRoutes = allRoute.filter((rt) => {
-      return rt.meta.layout === 'user'
-    })
+    const userRoutes = allRoute
+      .filter((rt) => {
+        console.log(rt)
+        console.log(rt.meta.title)
+        return rt.meta.layout === 'user' && rt.meta.title
+      })
+      .sort((a, b) => {
+        return a.meta.order - b.meta.order
+      })
     const activeRoute = ref(userRoutes[0].name)
     const isShowMenu = ref(false)
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen">
+  <div class="min-h-screen relative">
     <user-header></user-header>
     <slot></slot>
     <user-footer></user-footer>
@@ -9,8 +9,9 @@
 <script>
 import UserFooter from '@/components/UserFooter.vue'
 import UserHeader from '../components/UserHeader.vue'
+import BaseBreadCrumb from '@/components/BaseBreadCrumb.vue'
 export default {
-  components: { UserHeader, UserFooter },
+  components: { UserHeader, UserFooter, BaseBreadCrumb },
 }
 </script>
 

@@ -20,6 +20,11 @@ import AdminCreateCampaignView from '@/views/admin/AdminCreateCampaignView.vue'
 import AdminCategoriesListView from '@/views/admin/AdminCategoriesListView.vue'
 import AdminCategoryDetailView from '@/views/admin/AdminCategoryDetailView.vue'
 import AdminCreateCategoryView from '@/views/admin/AdminCreateCategoryView.vue'
+import CampaignDetailView from '@/views/user/CampaignDetailView.vue'
+import PaymentReturnView from '@/views/user/PaymentReturnView.vue'
+import UserDetailView from '@/views/user/UserDetailView.vue'
+import CollaborationView from '@/views/user/CollaborationView.vue'
+import UserCreateCampaignView from '@/views/user/UserCreateCampaignView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -31,6 +36,7 @@ const router = createRouter({
           path: '',
           name: 'home-route',
           meta: {
+            order: 1,
             layout: 'user',
             title: 'Trang chủ',
           },
@@ -40,19 +46,59 @@ const router = createRouter({
           path: 'campaigns',
           name: 'campaigns-route',
           meta: {
+            order: 2,
             layout: 'user',
             title: 'Các chiến dịch',
           },
           component: CampaignsView,
         },
+
+        {
+          path: 'campaigns/:id',
+          name: 'campaign-detail-route',
+          component: CampaignDetailView,
+          meta: {
+            layout: 'user',
+            parent: 'campaigns-route',
+          },
+        },
         {
           path: 'about',
           name: 'about-route',
           meta: {
+            order: 3,
             layout: 'user',
             title: 'Về chúng tôi',
           },
           component: AboutView,
+        },
+        {
+          path: 'collaboration',
+          name: 'collaboration-route',
+          meta: {
+            order: 4,
+            layout: 'user',
+            title: 'Hợp tác',
+          },
+          component: CollaborationView,
+        },
+        {
+          path: 'user-create-campaign',
+          name: 'user-create-campaign-route',
+          meta: {
+            layout: 'user',
+          },
+          component: UserCreateCampaignView,
+        },
+        {
+          path: 'user-detail',
+          name: 'user-detail-route',
+          meta: {
+            // order: 3,
+            layout: 'user',
+            // title: 'Về chúng tôi',
+          },
+          component: UserDetailView,
         },
         {
           path: 'login',
@@ -85,6 +131,14 @@ const router = createRouter({
             layout: 'auth',
           },
           component: ResetPasswordView,
+        },
+        {
+          path: 'payment-return',
+          name: 'payment-return-route',
+          meta: {
+            layout: 'auth',
+          },
+          component: PaymentReturnView,
         },
       ],
     },
@@ -230,6 +284,17 @@ const router = createRouter({
             layout: 'admin',
             title: 'Quản lý quyên góp',
             icon: 'donations',
+          },
+        },
+        {
+          path: 'notifications',
+          name: 'admin-notifications-route',
+          component: AdminDonationsView,
+          meta: {
+            order: 7,
+            layout: 'admin',
+            title: 'Quản lý thông báo',
+            icon: 'notifications',
           },
         },
       ],

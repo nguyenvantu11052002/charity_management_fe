@@ -1,38 +1,40 @@
 <template>
-  <div class="mx-4 my-4 md:my-2 shadow-lg md:mx-10">
-    <form
-      class="bg-white border-gray-200 shadow-lg border rounded-lg flex flex-col w-full p-10 justify-start gap-4"
-      @submit.prevent="handleSave()"
-    >
-      <base-input
-        :label="'Id'"
-        :type="'text'"
-        :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
-        v-model:data="role.id"
-        :readonly="'true'"
-      ></base-input>
-      <base-input
-        :label="'Tên'"
-        :type="'name'"
-        :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
-        v-model:data="role.name"
-        v-model:error="error.name"
-        :readonly="isNonEdit"
-      ></base-input>
-      <base-button
-        :type="'button'"
-        :content="'Chỉnh sửa'"
-        :style="' max-w-64 py-2 font-bold text-sm text-white h-10 bg-indigo-500 hover:bg-indigo-600 rounded-md'"
-        @click="isNonEdit = !isNonEdit"
-        v-if="isNonEdit"
-      ></base-button>
-      <base-button
-        v-else
-        :type="'submit'"
-        :content="'Lưu'"
-        :style="' max-w-64 py-2 font-bold text-sm text-white h-10 bg-green-500 hover:bg-green-600 rounded-md'"
-      ></base-button>
-    </form>
+  <div class="relative overflow-x-hidden min-h-screen w-full">
+    <div class="flex p-10 gap-8 flex-col md:ml-64 md:mt-10 mt-20">
+      <form
+        class="bg-white border-gray-200 shadow-lg border rounded-lg flex flex-col w-full p-10 justify-start gap-4"
+        @submit.prevent="handleSave()"
+      >
+        <base-input
+          :label="'Id'"
+          :type="'text'"
+          :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
+          v-model:data="role.id"
+          :readonly="'true'"
+        ></base-input>
+        <base-input
+          :label="'Tên'"
+          :type="'name'"
+          :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
+          v-model:data="role.name"
+          v-model:error="error.name"
+          :readonly="isNonEdit"
+        ></base-input>
+        <base-button
+          :type="'button'"
+          :content="'Chỉnh sửa'"
+          :style="' max-w-64 py-2 font-bold text-sm text-white h-10 bg-indigo-500 hover:bg-indigo-600 rounded-md'"
+          @click="isNonEdit = !isNonEdit"
+          v-if="isNonEdit"
+        ></base-button>
+        <base-button
+          v-else
+          :type="'submit'"
+          :content="'Lưu'"
+          :style="' max-w-64 py-2 font-bold text-sm text-white h-10 bg-green-500 hover:bg-green-600 rounded-md'"
+        ></base-button>
+      </form>
+    </div>
   </div>
 </template>
 

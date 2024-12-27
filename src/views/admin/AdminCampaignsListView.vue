@@ -1,21 +1,24 @@
 <template>
-  <div class="mx-2 md:mx-10">
-    <base-table
-      :table-name="'Tất cả chiến dịch'"
-      :page-size-options="pageSizeOptions"
-      :filterLabel="'Lọc chiến dịch'"
-      :groupFilters="groupFilters"
-      :createPageLink="'admin-create-campaign-route'"
-      :detailPageLink="'admin-campagin-detail-route'"
-      v-model:pageSize="pageSize"
-      v-model:search="search"
-      v-model:filterModel="filterModel"
-      v-model:currentPage="currentPage"
-      v-model:totalPage="totalPage"
-      v-model:totalRecord="totalRecord"
-      v-model:recordProperties="recordProperties"
-      v-model:recordData="recordData"
-    ></base-table>
+  <div class="relative overflow-x-hidden">
+    <div class="flex p-10 gap-8 flex-col md:ml-64 md:mt-10 mt-20">
+      <base-table
+        :table-name="'Tất cả chiến dịch'"
+        :page-size-options="pageSizeOptions"
+        :filterLabel="'Lọc chiến dịch'"
+        :groupFilters="groupFilters"
+        :createPageLink="'admin-create-campaign-route'"
+        :detailPageLink="'admin-campaign-detail-route'"
+        :table-content-style="' text-start border w-[2000px]'"
+        v-model:pageSize="pageSize"
+        v-model:search="search"
+        v-model:filterModel="filterModel"
+        v-model:currentPage="currentPage"
+        v-model:totalPage="totalPage"
+        v-model:totalRecord="totalRecord"
+        v-model:recordProperties="recordProperties"
+        v-model:recordData="recordData"
+      ></base-table>
+    </div>
   </div>
 </template>
 
@@ -24,8 +27,24 @@ import BaseTable from '@/components/BaseTable.vue'
 import { RepositoryFactory } from '@/repository/RepositoryFactory'
 import { computed, onBeforeMount, ref, watch } from 'vue'
 const campaignRepository = RepositoryFactory.get('campaigns')
-const pageSizeOptions = [10, 20, 30]
-const pageSize = ref(pageSizeOptions[0])
+const pageSizeOptions = [
+  {
+    id: 10,
+    title: 10,
+    value: 10,
+  },
+  {
+    id: 20,
+    title: 20,
+    value: 20,
+  },
+  {
+    id: 30,
+    title: 30,
+    value: 30,
+  },
+]
+const pageSize = ref(pageSizeOptions[0].value)
 const search = ref('')
 onBeforeMount(() => {
   getAllCampaigns('')
@@ -34,7 +53,7 @@ onBeforeMount(() => {
 const filterModel = ref([])
 const groupFilters = [
   {
-    property: 'role',
+    property: 'category',
     groupStyle: '',
     checkboxStyle: 'text-pink-500',
     checkboxs: [
@@ -75,12 +94,13 @@ const recordProperties = ref([
   'id',
   'Ảnh chủ đề',
   'Tiêu đề',
-  'Giới thiệu ngắn',
   'Mục tiêu',
-  'Thời gian bắt đầu',
-  'Thời gian kết thúc ',
+  'Người tạo',
+  'Ngày dự kiến bắt đầu',
+  'Ngày dự kiến kết thúc ',
+  'Trạng thái',
 ])
-const recordData = ref([{ id: 'https://www.svgrepo.com/show/452030/avatar-default.svg' }])
+const recordData = ref([{}])
 async function getAllCampaigns() {
   let params = pageParams.value
   if (searchKeyWordParams.value) {
@@ -93,7 +113,18 @@ async function getAllCampaigns() {
       const data = response.data
       totalPage.value = data.totalPages
       totalRecord.value = data.totalElements
-      recordData.value = data.content
+      recordData.value = data.content.map((cp) => {
+        return {
+          id: cp.id,
+          image: cp.images[0].url,
+          title: cp.title,
+          fundraisingGoal: cp.fundraisingGoal,
+          creator: cp.creator,
+          startDate: cp.startDate,
+          endDate: cp.endDate,
+          currentStatus: cp.currentStatus,
+        }
+      })
     })
     .catch((err) => {
       console.log(err)

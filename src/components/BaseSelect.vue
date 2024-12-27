@@ -6,7 +6,13 @@
       :class="[selectStyle ? selectStyle : '', disabled ? 'bg-slate-300' : '']"
       :disabled="disabled"
     >
-      <base-option v-for="op in options" :key="op" :title="op" :value="op" :selected="model === op">
+      <base-option
+        v-for="op in options"
+        :key="op.id"
+        :title="op.title"
+        :value="op.value"
+        :selected="model === op"
+      >
       </base-option>
     </select>
     <label v-if="props.secondaryTitle">{{ props.secondaryTitle }}</label>
@@ -17,7 +23,6 @@
 // import { ref } from 'vue'
 import BaseOption from './BaseOption.vue'
 const props = defineProps([
-  'options',
   'mainTitle',
   'secondaryTitle',
   'titleStyle',
@@ -27,6 +32,7 @@ const props = defineProps([
 const model = defineModel('model')
 
 const disabled = defineModel('disabled')
+const options = defineModel('options')
 // const options = [10, 20, 30]
 // const firtTitle = 'Số bản ghi 1 trang: '
 // const secondTitle = ''

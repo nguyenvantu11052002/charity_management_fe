@@ -10,7 +10,7 @@
       ]"
       :placeholder="props.placeholder"
       :readonly="readonly"
-      :min="props.min ? props.min : ''"
+      :min="min ? min : ''"
       :max="props.max ? props.max : ''"
       :step="props.step ? props.step : ''"
       v-model="data"
@@ -20,11 +20,12 @@
 </template>
 
 <script setup>
-const props = defineProps(['label', 'type', 'style', 'placeholder', 'min', 'max', 'step'])
+const props = defineProps(['label', 'type', 'style', 'placeholder', 'max', 'step'])
 
 const data = defineModel('data')
 const error = defineModel('error')
 const readonly = defineModel('readonly')
+const min = defineModel('min')
 </script>
 
 <style>

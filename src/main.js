@@ -14,10 +14,16 @@ import DonationsIcon from './components/icons/DonationsIcon.vue'
 import FilterIcon from './components/icons/FilterIcon.vue'
 import RoleIcon from './components/icons/RoleIcon.vue'
 import CategoriesIcon from './components/icons/CategoriesIcon.vue'
+import NotificationsIcon from './components/icons/NotificationsIcon.vue'
 // import HomeIcon from './icons/HomeIcon.vue'
 // import UsersIcon from './icons/UsersIcon.vue'
 // import CampaignsIcon from './icons/CampaignsIcon.vue'
 // import DonationsIcon from './icons/DonationsIcon.vue'
+// import process from 'process/browser'
+
+// window.process = process
+
+// window.global = window
 const pinia = createPinia()
 const app = createApp(App)
 
@@ -33,10 +39,18 @@ app
   .component('filters-icon', FilterIcon)
   .component('role-icon', RoleIcon)
   .component('categories-icon', CategoriesIcon)
+  .component('notifications-icon', NotificationsIcon)
 app.mount('#app')
 
 router.beforeEach((to, from) => {
   const authStore = useAuthStore()
+
+  if (to.name === 'user-create-campaign-route') {
+    if (!authStore.currentUser) {
+      router.push({ to: { name: 'login-route' } })
+      return '/login'
+    }
+  }
   //tu choi login page khi da dang nhap
   if (
     (to.name === 'login-route' ||
