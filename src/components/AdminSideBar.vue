@@ -32,15 +32,47 @@
           />
         </svg>
       </span>
-      <nav-bar
-        :routes="adminRoutes"
-        :changeRoute="changeActiveRoute"
-        :navStyle="'flex gap-6 flex-col absolute top-20 bg-white rounded-lg px-4 py-4 shadow-lg'"
-        :navItemStyle="'text-lg font-semibold flex gap-4 items-center   '"
-        class="justify-center flex"
+      <div
+        class="flex gap-6 flex-col absolute top-20 bg-white rounded-lg px-4 py-4 shadow-lg"
         :class="isShowMenu ? 'flex' : 'hidden'"
-      ></nav-bar>
+      >
+        <nav-bar
+          :routes="adminRoutes"
+          :changeRoute="changeActiveRoute"
+          :navStyle="'flex gap-6 flex-col'"
+          :navItemStyle="'text-lg font-semibold flex gap-4 items-center   '"
+          class="justify-center flex"
+        ></nav-bar>
+        <div class="flex flex-col">
+          <base-link
+            :to="'user-detail-route'"
+            :title="userInfor.email"
+            :defaultStyle="'bg-white text-black justify-center'"
+          ></base-link>
+          <base-button
+            @click="handleLogout"
+            :content="'Đăng xuất'"
+            :style="'min-w-full px-4 py-2 text-sm text-white h-10 bg-gray-500 hover:bg-gray-600 rounded-md'"
+          ></base-button>
+        </div>
+      </div>
     </div>
+    <div class="flex flex-col w-full border-t border-gray-500 mt-4">
+      <base-link
+        :to="'user-detail-route'"
+        :title="userInfor.email"
+        :defaultStyle="'bg-white text-black justify-center'"
+      ></base-link>
+      <base-button
+        @click="handleLogout"
+        :content="'Đăng xuất'"
+        :style="'min-w-full p-2  text-sm text-white h-10 bg-gray-500 hover:bg-gray-600 rounded-md'"
+      ></base-button>
+    </div>
+
+    <!-- <div class="gap-2 md:gap-4 lg:justify-center justify-end border-t-2 border-pink-500">
+
+    </div> -->
   </div>
 </template>
 
@@ -49,6 +81,12 @@ import { useRoute, useRouter } from 'vue-router'
 import AppLogo from './AppLogo.vue'
 import NavBar from './NavBar.vue'
 import { ref } from 'vue'
+import { useAuthStore } from '@/store/authStore'
+import { storeToRefs } from 'pinia'
+import BaseLink from './BaseLink.vue'
+import BaseButton from './BaseButton.vue'
+const authStore = useAuthStore()
+const { userInfor } = storeToRefs(authStore)
 const router = useRouter()
 const route = useRoute()
 const allRoute = router.getRoutes()
@@ -66,6 +104,11 @@ const activeRoute = ref(route.meta.parent ? route.meta.parent : route.name)
 const isShowMenu = ref(false)
 function changeActiveRoute(newRoute) {
   activeRoute.value = newRoute
+}
+function handleLogout() {
+  authStore.currentUser = ''
+  console.log(authStore.currentUser)
+  router.replace({ name: 'home-route' })
 }
 </script>
 

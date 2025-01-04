@@ -8,7 +8,7 @@
     <section class="w-full max-w-screen-lg flex flex-col gap-10 mx-4 mt-10 px-4">
       <div class="gap-4 grid grid-cols-1 md:grid-cols-2">
         <img
-          src="https://vietnamchildrensfund.com/wp-content/uploads/2023/12/vietnam-childrens-fund-17-1.jpg"
+          src="https://givewellvnbucket.s3.ap-southeast-2.amazonaws.com/slider/slide-6.jpg"
           class="object-cover rounded-lg w-full"
         />
         <div class="h-full gap-2 flex flex-col">

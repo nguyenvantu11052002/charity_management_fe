@@ -141,7 +141,7 @@
             @click="addImageToEdt"
           ></base-button>
           <Editor
-            api-key="ro1kh76z2gvuvctecqi2chda949fjai0uq5nqbe67v9qq9d4"
+            api-key="s8slp19bxol8ou5pyvsnvcqlul0r4ryt1fjvrsfnfuitkw7b"
             :init="{
               height: 1000,
               toolbar_mode: 'sliding',
@@ -176,7 +176,7 @@ import BaseInput from '@/components/BaseInput.vue'
 import Editor from '@tinymce/tinymce-vue'
 import BaseSelect from '@/components/BaseSelect.vue'
 import { onBeforeMount, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { RepositoryFactory } from '@/repository/RepositoryFactory'
 import ImageRepository from '@/repository/ImageRepository'
 import BaseBanner from '@/components/BaseBanner.vue'
@@ -185,7 +185,6 @@ onBeforeMount(() => {
   getAllCategories()
 })
 
-const route = useRoute()
 const router = useRouter()
 const campaignRepository = RepositoryFactory.get('campaigns')
 const categoryRepository = RepositoryFactory.get('categories')

@@ -1,3 +1,4 @@
+// Lưu user và truy vấn user trong localstorage
 export default {
   saveUser(user) {
     localStorage.setItem('user', user)

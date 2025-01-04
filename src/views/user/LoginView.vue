@@ -94,16 +94,6 @@ const handleLogin = () => {
       error.value.password = response.BAD_CREDENTIALS
         ? response.BAD_CREDENTIALS
         : error.value.password
-
-      // error.value.email = response.USER_NOT_EXISTED
-      // const flatError = []
-      // for (const [code, message] of Object.entries(response)) {
-      //   console.log(code)
-      //   flatError.push(message)
-      //   error.value.email =
-      // }
-      // error.value = flatError[0]
-      // console.log(err.response.data.errors)
     })
 }
 </script>

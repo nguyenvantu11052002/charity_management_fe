@@ -4,7 +4,6 @@
       <base-table
         :table-name="'Tất cả chiến dịch'"
         :page-size-options="pageSizeOptions"
-        :filterLabel="'Lọc chiến dịch'"
         :groupFilters="groupFilters"
         :createPageLink="'admin-create-campaign-route'"
         :detailPageLink="'admin-campaign-detail-route'"
@@ -92,13 +91,13 @@ const totalRecord = ref(100)
 
 const recordProperties = ref([
   'id',
+  'Trạng thái',
   'Ảnh chủ đề',
   'Tiêu đề',
   'Mục tiêu',
   'Người tạo',
   'Ngày dự kiến bắt đầu',
   'Ngày dự kiến kết thúc ',
-  'Trạng thái',
 ])
 const recordData = ref([{}])
 async function getAllCampaigns() {

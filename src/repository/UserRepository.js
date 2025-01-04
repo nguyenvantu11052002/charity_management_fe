@@ -31,23 +31,29 @@ export default {
       return response.data
     })
   },
-
-  // refresh(refreshToken) {
-  //   return Repository.post(`${resource}/refresh`, refreshToken)
-  // },
-  // logout() {},
-  // async forgotPassword(payload) {
-  //   return Repository.post(`${resource}/forgot-password`, payload).then(
-  //     response => {
-  //       return response.data
-  //     },
-  //   )
-  // },
-  // async resetPassword(payload) {
-  //   return Repository.post(`${resource}/reset-password`, payload).then(
-  //     response => {
-  //       return response.data
-  //     },
-  //   )
-  // },
+  async getProfile(id) {
+    return Repository.get(`${resource}/${id}/profile`).then((response) => {
+      return response.data
+    })
+  },
+  async updateProfile(id, payload) {
+    return Repository.put(`${resource}/${id}/profile`, payload).then((response) => {
+      return response.data
+    })
+  },
+  async changePassword(id, payload) {
+    return Repository.put(`${resource}/${id}/change-password`, payload).then((response) => {
+      return response.data
+    })
+  },
+  async getCampaignOfUser(id, params) {
+    return Repository.get(`${resource}/${id}/campaigns?${params}`).then((response) => {
+      return response.data
+    })
+  },
+  async getDonationOfUser(id, params) {
+    return Repository.get(`${resource}/${id}/donations?${params}`).then((response) => {
+      return response.data
+    })
+  },
 }

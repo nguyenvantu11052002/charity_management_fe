@@ -25,6 +25,11 @@ import PaymentReturnView from '@/views/user/PaymentReturnView.vue'
 import UserDetailView from '@/views/user/UserDetailView.vue'
 import CollaborationView from '@/views/user/CollaborationView.vue'
 import UserCreateCampaignView from '@/views/user/UserCreateCampaignView.vue'
+import AdminTemplatesListView from '@/views/admin/AdminTemplatesListView.vue'
+import AdminNotificationView from '@/views/admin/AdminNotificationView.vue'
+import AdminCreateTemplateView from '@/views/admin/AdminCreateTemplateView.vue'
+import AdminTemplateDetailView from '@/views/admin/AdminTemplateDetailView.vue'
+import CampaignSearchView from '@/views/user/CampaignSearchView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -57,6 +62,15 @@ const router = createRouter({
           path: 'campaigns/:id',
           name: 'campaign-detail-route',
           component: CampaignDetailView,
+          meta: {
+            layout: 'user',
+            parent: 'campaigns-route',
+          },
+        },
+        {
+          path: 'campaigns/search/:keyword',
+          name: 'campaign-search-route',
+          component: CampaignSearchView,
           meta: {
             layout: 'user',
             parent: 'campaigns-route',
@@ -287,11 +301,40 @@ const router = createRouter({
           },
         },
         {
+          path: 'templates',
+          name: 'admin-templates-route',
+          component: AdminTemplatesListView,
+          meta: {
+            order: 7,
+            layout: 'admin',
+            title: 'Quản lý mẫu thông báo',
+            icon: 'notificationTemplates',
+          },
+        },
+        {
+          path: 'templates/:id',
+          name: 'admin-template-detail-route',
+          component: AdminTemplateDetailView,
+          meta: {
+            layout: 'admin',
+            parent: 'admin-templates-route',
+          },
+        },
+        {
+          path: 'templates/create',
+          name: 'admin-create-templates-route',
+          component: AdminCreateTemplateView,
+          meta: {
+            layout: 'admin',
+            parent: 'admin-templates-route',
+          },
+        },
+        {
           path: 'notifications',
           name: 'admin-notifications-route',
           component: AdminDonationsView,
           meta: {
-            order: 7,
+            order: 8,
             layout: 'admin',
             title: 'Quản lý thông báo',
             icon: 'notifications',

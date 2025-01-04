@@ -6,6 +6,11 @@ export default {
       return response.data
     })
   },
+  async search(params) {
+    return Repository.get(`${resource}/search?${params}`).then((response) => {
+      return response.data
+    })
+  },
   async create(payload) {
     return Repository.post(`${resource}`, payload).then((response) => {
       return response.data
@@ -21,13 +26,13 @@ export default {
       return response.data
     })
   },
-  // async updateStatus(id, payload) {
-  //   return Repository.put(`${resource}/${id}/status`, payload).then((response) => {
-  //     return response.data
-  //   })
-  // },
   async schedule(id, payload) {
     return Repository.put(`${resource}/${id}/schedule`, payload).then((response) => {
+      return response.data
+    })
+  },
+  async reject(id) {
+    return Repository.put(`${resource}/${id}/reject`).then((response) => {
       return response.data
     })
   },
@@ -66,23 +71,4 @@ export default {
       return response.data
     })
   },
-
-  // refresh(refreshToken) {
-  //   return Repository.post(`${resource}/refresh`, refreshToken)
-  // },
-  // logout() {},
-  // async forgotPassword(payload) {
-  //   return Repository.post(`${resource}/forgot-password`, payload).then(
-  //     response => {
-  //       return response.data
-  //     },
-  //   )
-  // },
-  // async resetPassword(payload) {
-  //   return Repository.post(`${resource}/reset-password`, payload).then(
-  //     response => {
-  //       return response.data
-  //     },
-  //   )
-  // },
 }

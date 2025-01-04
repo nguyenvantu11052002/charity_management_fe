@@ -77,7 +77,7 @@
                 : 'bg-red-500 text-white hover:bg-red-600',
             ]"
           >
-            {{ isSuccess ? 'Về trang chủ' : 'Thử lại' }}
+            Về trang chủ
           </button>
         </div>
       </div>

@@ -5,11 +5,11 @@ import CampaignRepository from './CampaignRepository'
 import CommentRepository from './CommentRepository'
 import DonationsRepository from './DonationsRepository'
 import ImageRepository from './ImageRepository'
-// import ErrorCodeRepository from './ErrorCodeRepository'
 import LocalStorageRepository from './LocalStorageRepository'
+import NotificationTemplateRepository from './NotificationTemplateRepository'
 import PaymentRepository from './PaymentRepository'
+import ResultImageRepository from './ResultImageRepository'
 import RoleRepository from './RoleRepository'
-// import NotificationRepository from './NotificationRepository'
 import UserRepository from './UserRepository'
 
 const repositories = {
@@ -25,6 +25,8 @@ const repositories = {
   payments: PaymentRepository,
   comments: CommentRepository,
   campaignImages: CampaignImageRepository,
+  resultImages: ResultImageRepository,
+  notificationTemplates: NotificationTemplateRepository,
   // notifications: NotificationRepository,
 }
 

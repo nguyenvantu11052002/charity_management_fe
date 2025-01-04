@@ -1,5 +1,5 @@
 import Repository from './Repository'
-const resource = '/comments'
+const resource = '/result-images'
 export default {
   // async getAll(params) {
   //   return Repository.get(`${resource}?${params}`).then((response) => {
@@ -8,11 +8,6 @@ export default {
   // },
   async create(payload) {
     return Repository.post(`${resource}`, payload).then((response) => {
-      return response.data
-    })
-  },
-  async update(id, payload) {
-    return Repository.put(`${resource}/${id}`, payload).then((response) => {
       return response.data
     })
   },

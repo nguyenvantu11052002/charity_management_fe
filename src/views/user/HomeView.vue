@@ -10,10 +10,11 @@
         </h1>
         <p class="text-center">Lựa chọn chiến dịch mà bạn quan tấm</p>
       </div>
-
+      <!-- các chiến dịch -->
       <div
         class="justify-start w-full max-w-screen-xl gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-center px-6 md:px-2 lg:px-2"
       >
+        <!-- Chiến dịch -->
         <base-card
           v-for="campaign in campaignsWithRemainingTime"
           :key="campaign.id"
@@ -28,31 +29,38 @@
               </div>
             </div>
           </template>
+
           <!-- card title -->
           <template v-slot:card-title>
             <div class="px-4">
-              <p class="text-lg hover:text-pink-600 font-bold line-clamp-2">
+              <p class="text-lg hover:text-pink-600 font-bold line-clamp-2 min-h-16">
                 {{ campaign.title }}
               </p>
             </div>
           </template>
+
           <!-- card-content -->
           <template v-slot:card-content>
             <div class="flex items-center justify-between flex-wrap gap-4">
+              <!-- người tạo -->
               <div class="flex items-center gap-2">
                 <img :src="campaign.creator.avatar" class="w-10 h-10 rounded-full" />
                 <div>{{ campaign.creator.email }}</div>
               </div>
 
+              <!-- Thời gian còn lại hoặc trạng thái -->
               <div class="bg-amber-500 rounded-lg p-1 text-white text-xs">
                 {{ campaign.remainingTime.displayText }}
               </div>
             </div>
+
             <div class="gap-2 flex flex-col">
+              <!-- số tiền quyên góp được trên tổng số tiền muc -->
               <div>
                 <span class="font-bold">{{ formatCurrency(campaign.totalAmountRaised) }} đ</span>
                 <span>/ {{ formatCurrency(campaign.fundraisingGoal) }} đ</span>
               </div>
+
               <div class="w-full h-2 bg-gray-200 rounded-full relative overflow-hidden">
                 <!-- Nền của thanh tiến trình -->
                 <div class="absolute bg-gray-500"></div>
@@ -85,12 +93,14 @@
           </template>
         </base-card>
       </div>
+
       <div
         class="text-gray-500 flex items-center justify-center font-bold text-center h-96 bg-gray-200 col-span-3 w-full max-w-3xl"
         v-if="campaigns.length == 0"
       >
         Không có chiến dịch nào
       </div>
+
       <div v-else class="flex grid-cols-1 mt-4 md:col-span-2 lg: col-span-3 justify-center p-2">
         <base-button
           :type="'button'"
@@ -101,11 +111,6 @@
       </div>
     </section>
   </div>
-  <!-- <section
-    class="fixed z-50 left-0 right-0 top-0 bottom-0 w-full h-screen bg-black/70 flex items-center justify-center"
-  >
-    Loading
-  </section> -->
 </template>
 
 <script setup>
@@ -119,9 +124,9 @@ import BaseButton from '@/components/BaseButton.vue'
 import { useSocketStore } from '@/store/socketStore'
 const campaignRepository = RepositoryFactory.get('campaigns')
 
-const currentCategory = ref()
 const isLoading = ref(null)
 const campaigns = ref([])
+
 const currentDateTime = ref(new Date())
 const router = useRouter()
 
@@ -132,6 +137,7 @@ onBeforeMount(async () => {
   if (!socketStore.isConnected) {
     await socketStore.connect()
   }
+
   await getNewStartedCampampaign()
   // Cập nhật thời gian hiện tại mỗi giây
   setInterval(() => {

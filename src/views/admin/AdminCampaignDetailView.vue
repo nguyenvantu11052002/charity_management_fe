@@ -9,7 +9,11 @@
           <div
             class="w-full h-96 border bg-gray-200 text-center flex justify-center items-center text-gray-500"
           >
-            <img :src="currentPreviewImage.url" class="w-full max-w-5xl lg:h-96 object-cover" />
+            <img
+              v-if="currentPreviewImage"
+              :src="currentPreviewImage.url"
+              class="w-full max-w-5xl lg:h-96 object-cover"
+            />
           </div>
           <div class="w-full mt-2 gap-2 flex flex-wrap">
             <div
@@ -159,6 +163,7 @@
           <div v-html="campaign.content"></div>
         </div>
       </div>
+
       <!-- Donations -->
       <div class="flex flex-col col-span-1 lg:col-span-2 min-h-[400px]">
         <div class="bg-white border p-4 gap-4 shadow-lg">
@@ -248,14 +253,70 @@
                     v-else
                   ></avatar-icon>
                 </div>
-                <div class="flex-col">
+
+                <div
+                  class="flex-col"
+                  :class="currentEditComment.id === comment.id ? 'flex' : 'hidden'"
+                >
+                  <div class="bg-indigo-500 rounded-xl p-4 flex items-center">
+                    <div class="flex items-center bg-white rounded-lg p-1 gap-2">
+                      <input
+                        v-model="currentEditComment.content"
+                        class="px-2 rounded-md h-10 w-full border"
+                      />
+                      <div class="" @click="onClickSaveEditComment">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="size-8 hover:text-pink-500 cursor-pointer"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="hover:text-pink-500 cursor-pointer px-2 font-semibold"
+                    @click="onClickCancelEditComment(comment)"
+                  >
+                    Hủy
+                  </div>
+                </div>
+
+                <div
+                  class="flex-col"
+                  :class="currentEditComment.id === comment.id ? 'hidden' : 'flex'"
+                >
                   <div class="bg-indigo-500 rounded-xl p-2">
                     <div class="text-white font-bold">{{ comment.user.email }}</div>
                     <div class="p-1 text-white">
                       {{ comment.content }}
                     </div>
                   </div>
-                  <div>{{ comment.createdAt }}</div>
+                  <div class="flex text-sm gap-4 px-2">
+                    <div>{{ comment.createdAt }}</div>
+                    <div class="flex gap-4 px-2 items-center font-semibold">
+                      <div
+                        class="hover:text-pink-500 cursor-pointer"
+                        @click="onClickEditComment(comment)"
+                      >
+                        Chỉnh sửa
+                      </div>
+                      <div
+                        class="hover:text-pink-500 cursor-pointer"
+                        @click="onClickDeleteComment(comment)"
+                      >
+                        Xóa
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -279,6 +340,82 @@
       @click.self="cancelEdit"
     >
       <div class="bg-white w-screen p-8 mx-8">
+        <section class="relative">
+          <!-- <div
+            v-if="isUploadingEditImage"
+            class="absolute top-0 bottom-0 left-0 right-0 bg-black/40 flex items-center justify-center text-white"
+          >
+            Đang tải ảnh lên...
+          </div> -->
+          <label class="text-sm font-semibold">Ảnh chủ đề</label>
+          <div class="mt-2">
+            <div
+              class="w-full h-96 border bg-gray-200 text-center flex justify-center items-center text-gray-500"
+              v-if="editingCampaign.images.length == 0"
+            >
+              Upload ảnh
+            </div>
+            <div
+              class="w-full h-96 border bg-gray-200 text-center flex justify-center items-center text-gray-500"
+              v-else
+            >
+              <img
+                v-if="currentPreviewEditingImage"
+                :src="currentPreviewEditingImage.url"
+                class="w-full max-w-5xl lg:h-96 object-cover"
+              />
+            </div>
+
+            <div class="w-full mt-2 gap-2 flex flex-wrap">
+              <div
+                class="w-24 h-24 cursor-pointer relative group"
+                v-for="image in editingCampaign.images"
+                :key="image"
+                :class="image == currentPreviewEditingImage ? 'border-4 border-pink-500' : ''"
+              >
+                <!-- <span
+                  class="absolute bottom-0 left-0 right-0 h-1/2 bg-black/70 opacity-0 transition-opacity group-hover:opacity-100"
+                >
+                </span> -->
+                <button
+                  class="absolute bottom-0 left-0 w-full h-1/3 bg-red-500 text-white flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100"
+                  @click="onClickDeleteEditImage(image)"
+                >
+                  Xóa
+                </button>
+                <!-- Nút xóa -->
+                <img
+                  :src="image.url"
+                  class="w-full h-full object-cover"
+                  @click.left="currentPreviewEditingImage = image"
+                />
+              </div>
+              <button
+                type="button"
+                class="flex text -center bg-gray-200 h-24 w-24 items-center"
+                @click="onClickAddCampaignImage"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-6 w-full"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+              </button>
+            </div>
+            <span class="text-red-500 text-xs p-1">{{ editingCampaignError.images }}</span>
+            <input
+              type="file"
+              class="mt-4 hidden"
+              ref="editImageInput"
+              @change="onEditImageInputChange"
+            />
+          </div>
+        </section>
         <base-input
           :label="'Tiêu đề'"
           :type="'text'"
@@ -337,7 +474,7 @@
         <div class="flex flex-col items-stretch">
           <label class="text-sm font-semibold" for="">Nội dung</label>
           <editor
-            api-key="ro1kh76z2gvuvctecqi2chda949fjai0uq5nqbe67v9qq9d4"
+            api-key="s8slp19bxol8ou5pyvsnvcqlul0r4ryt1fjvrsfnfuitkw7b"
             :init="{
               toolbar_mode: 'sliding',
               plugins:
@@ -345,7 +482,7 @@
               toolbar:
                 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
             }"
-            initial-value="Welcome to TinyMCE!"
+            @Init="handleEditEditorInit"
             v-model="editingCampaign.content"
           />
           <span class="text-red-500 text-xs p-1">{{ editingCampaignError.content }}</span>
@@ -482,9 +619,60 @@
           v-model:error="creationCampaignResultError.executeDate"
         ></base-input>
 
-        <div class="flex flex-col items-stretch">
+        <div class="flex flex-col items-stretch gap-2">
+          <p class="font-semibold text-sm">Nội dung</p>
+          <div class="flex flex-col">
+            <input
+              type="file"
+              ref="resultImageInput"
+              class="hidden"
+              @change="onResultInputChange"
+            />
+
+            <div class="flex gap-2">
+              <!-- Danh sách ảnh kết quả -->
+              <div
+                class="w-24 h-24 cursor-pointer relative group"
+                v-for="image in creationCampaignResult.images"
+                :key="image"
+              >
+                <!-- Nút xóa -->
+                <button
+                  class="absolute bottom-0 left-0 w-full h-1/3 bg-red-500 text-white flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100"
+                  @click="onClickDeleteResultImage(image)"
+                >
+                  Xóa
+                </button>
+
+                <img :src="image.url" class="w-full h-full object-cover" />
+              </div>
+              <!-- Button thêm ảnh kết quả -->
+              <button
+                @click="onClickAddResultImage"
+                type="button"
+                class="flex text -center bg-gray-200 h-24 w-24 items-center relative group"
+              >
+                <div
+                  class="absolute flex items-center justify-center text-xs text-white top-0 bottom-0 left-0 right-0 bg-black/70 opacity-0 transition-opacity group-hover:opacity-100"
+                >
+                  Thêm ảnh
+                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-6 w-full"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
           <editor
-            api-key="ro1kh76z2gvuvctecqi2chda949fjai0uq5nqbe67v9qq9d4"
+            api-key="s8slp19bxol8ou5pyvsnvcqlul0r4ryt1fjvrsfnfuitkw7b"
             :init="{
               height: 500,
               toolbar_mode: 'sliding',
@@ -494,6 +682,7 @@
                 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
             }"
             v-model="creationCampaignResult.content"
+            @Init="handleResultEditorInit"
           />
           <span class="text-red-500 text-xs p-1">{{ creationCampaignResultError.content }}</span>
         </div>
@@ -518,6 +707,7 @@ import { useRoute, useRouter } from 'vue-router'
 import Editor from '@tinymce/tinymce-vue'
 import AvatarIcon from '@/components/icons/AvatarIcon.vue'
 import { useSocketStore } from '@/store/socketStore'
+import ImageRepository from '@/repository/ImageRepository'
 const campaign = ref({
   id: '9c5197ed-ff00-4edc-b089-27de3420997c',
   images: [],
@@ -538,7 +728,6 @@ const donationsPageSize = ref(10)
 const donationsTotalPage = ref(1)
 const isLoading = ref(true)
 const currentDateTime = ref(new Date())
-const fileInput = ref('')
 const currentPreviewImage = ref('')
 
 const campaignRepository = RepositoryFactory.get('campaigns')
@@ -648,9 +837,53 @@ function formatDate(dateStr) {
   )}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`
 }
 
+// logic edit, delete comment
+const commentRepository = RepositoryFactory.get('comments')
+const currentEditComment = ref({})
+function onClickEditComment(comment) {
+  currentEditComment.value = {
+    ...comment,
+  }
+}
+
+function onClickDeleteComment(comment) {
+  commentRepository
+    .delete(comment.id)
+    .then((response) => {
+      console.log(response)
+      getCommentOfCampaign()
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+function onClickCancelEditComment() {
+  currentEditComment.value = {}
+}
+
+function onClickSaveEditComment() {
+  commentRepository
+    .update(currentEditComment.value.id, currentEditComment.value)
+    .then((response) => {
+      console.log(response)
+      for (let index in comments.value) {
+        if (comments.value[index].id === response.data.id) {
+          comments.value[index].content = response.data.content
+          break
+        }
+      }
+      onClickCancelEditComment()
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
 // Edit campaign logic
 const editingCampaign = ref({
   title: '',
+  images: [],
   shortDescription: '',
   content: '',
   fundraisingGoal: '',
@@ -661,6 +894,7 @@ const editingCampaign = ref({
 })
 const editingCampaignError = ref({
   title: '',
+  images: '',
   shortDescription: '',
   content: '',
   fundraisingGoal: '',
@@ -670,9 +904,17 @@ const editingCampaignError = ref({
   endTime: '',
 })
 const isShowModal = ref(false)
+const editEditor = ref()
+const editImageInput = ref('')
+const campaignImageRepository = RepositoryFactory.get('campaignImages')
+const handleEditEditorInit = (evt, editor) => {
+  editEditor.value = editor
+}
+const currentPreviewEditingImage = ref('')
+
 function onClickEdit() {
   editingCampaign.value = {
-    image: campaign.value.image,
+    images: campaign.value.images,
     title: campaign.value.title,
     shortDescription: campaign.value.shortDescription,
     content: campaign.value.content,
@@ -682,26 +924,112 @@ function onClickEdit() {
     startTime: campaign.value.startTime,
     endTime: campaign.value.endTime,
   }
+  currentPreviewEditingImage.value = editingCampaign.value.images[0]
   isShowModal.value = !isShowModal.value
 }
 function cancelEdit() {
   // editingCampaign.value = ''
   isShowModal.value = !isShowModal.value
+  currentPreviewImage.value = campaign.value.images[0]
   resetEditingCampaignError()
 }
 
-// function onClickUpload() {
-//   console.log(fileInput)
-//   fileInput.value.click()
-// }
+function onClickDeleteEditImage(imageToDelete) {
+  if (editingCampaign.value.images.length == 1) {
+    editingCampaignError.value.images = 'Campaign must be at least one image'
+    return
+  }
+  const imageDeleteId = imageToDelete.id
+  deleteImageEditEditor(imageToDelete)
+  editingCampaign.value.images = editingCampaign.value.images.filter(
+    (image) => image.id !== imageDeleteId
+  )
+  campaignImageRepository
+    .delete(imageDeleteId)
+    .then((response) => {
+      console.log(response.data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+    .finally(() => {
+      if (editingCampaign.value.images.length > 0) {
+        currentPreviewEditingImage.value = editingCampaign.value.images[0]
+      } else {
+        currentPreviewEditingImage.value = {}
+      }
+    })
+}
 
-// function handleFileChange(event) {
-//   const file = event.target.files[0]
-//   selectedFile.value = file
-//   previewImage.value = URL.createObjectURL(file)
-// }
+function addImageToEditEditor(image) {
+  editEditor.value.insertContent(`
+      <img id="${image.id}" src="${image.url}"  />
+    `)
+}
+
+function deleteImageEditEditor(image) {
+  const img = editEditor.value.dom.get(image.id)
+  if (img) {
+    img.remove()
+    editingCampaign.value.content = editEditor.value.getContent()
+  }
+}
+
+const onEditImageInputChange = (event) => {
+  const newImage = event.target.files[0]
+  console.log(newImage) // Lấy tệp đầu tiên từ input
+
+  const img = {
+    fileName: newImage.name,
+    file: newImage,
+    url: URL.createObjectURL(newImage),
+  }
+
+  const existingImages = editingCampaign.value.images.filter(
+    (image) => image.fileName === img.fileName
+  )
+  if (existingImages.length > 0) {
+    console.log('Image with the same name already exists:', existingImages)
+  } else {
+    handleUploadCampaignImage(img)
+  }
+}
+
+function handleUploadCampaignImage(image) {
+  campaignImageRepository
+    .create(image)
+    .then((response) => {
+      console.log(response.data)
+      const data = response.data
+      imageRepository
+        .upload(data.preSignedUrl, image.file)
+        .then((res) => {
+          console.log(res)
+          editingCampaign.value.images.push(data)
+          addImageToEditEditor(data)
+          // addToEdt(data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+        .finally(() => {
+          if (editingCampaign.value.images.length > 0) {
+            currentPreviewEditingImage.value = editingCampaign.value.images[0]
+          }
+        })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+function onClickAddCampaignImage() {
+  editImageInput.value.click()
+}
+
 function resetEditingCampaignError() {
   editingCampaignError.value.title = ''
+  editingCampaignError.value.images = ''
   editingCampaignError.value.shortDescription = ''
   editingCampaignError.value.content = ''
   editingCampaignError.value.fundraisingGoal = ''
@@ -715,6 +1043,10 @@ function validateEditCampaign() {
   let haveError = false
   if (!editingCampaign.value.title) {
     editingCampaignError.value.title = 'Tilte must be not null'
+    haveError = true
+  }
+  if (editingCampaign.value.images.length == 0) {
+    editingCampaignError.value.images = 'Images must be not null'
     haveError = true
   }
   if (!editingCampaign.value.shortDescription) {
@@ -807,12 +1139,14 @@ const isEditEndTime = computed(() => {
 function handleUpdateCampaign() {
   resetEditingCampaignError()
   const err = validateEditCampaign()
+  console.log(err)
   if (!err) {
     campaignRepository
       .update(campaign.value.id, editingCampaign.value)
       .then((response) => {
         console.log(response)
         campaign.value = response.data
+
         cancelEdit()
       })
       .catch((err) => {
@@ -939,12 +1273,11 @@ function onClickReject() {
 }
 function handleRejectCampaign() {
   campaignRepository
-    .updateStatus(campaign.value.id, {
-      status: 'REJECTED',
-    })
+    .reject(campaign.value.id)
     .then((response) => {
       console.log(response)
       campaign.value = response.data
+      currentPreviewImage.value = campaign.value.images[0]
     })
     .catch((err) => {
       console.log(err)
@@ -1040,6 +1373,7 @@ function handleStopCampaign() {
     .then((response) => {
       console.log(response)
       campaign.value = response.data
+      currentPreviewImage.value = campaign.value.images[0]
     })
     .catch((err) => {
       console.log(err)
@@ -1087,6 +1421,7 @@ function handleReStartCampaign() {
       .then((response) => {
         console.log(response)
         campaign.value = response.data
+        currentPreviewImage.value = campaign.value.images[0]
         cancelReStart()
       })
       .catch((err) => {
@@ -1139,12 +1474,97 @@ const creationCampaignResultError = ref({
   executeDate: '',
   content: '',
 })
+const resultEditor = ref()
+const handleResultEditorInit = (evt, editor) => {
+  resultEditor.value = editor
+}
+const resultImageInput = ref('')
 const isShowResultModal = ref(false)
+const resultImageRepository = RepositoryFactory.get('resultImages')
+const imageRepository = ImageRepository
+
+function onClickDeleteResultImage(imageToDelete) {
+  const imageDeleteId = imageToDelete.id
+  creationCampaignResult.value.images = creationCampaignResult.value.images.filter(
+    (image) => image.id !== imageDeleteId
+  )
+  deleteImageOfContentResult(imageToDelete)
+  resultImageRepository
+    .delete(imageDeleteId)
+    .then((response) => {
+      console.log(response.data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+function addImageToResultEditor(image) {
+  resultEditor.value.insertContent(`
+      <img id="${image.id}" src="${image.url}"  />
+    `)
+}
+function deleteImageOfContentResult(image) {
+  const img = resultEditor.value.dom.get(image.id)
+  if (img) {
+    img.remove()
+  }
+}
+
+const onResultInputChange = (event) => {
+  const newImage = event.target.files[0]
+  console.log(newImage) // Lấy tệp đầu tiên từ input
+
+  const img = {
+    fileName: newImage.name,
+    file: newImage,
+    url: URL.createObjectURL(newImage),
+  }
+
+  const existingImages = creationCampaignResult.value.images.filter(
+    (image) => image.fileName === img.fileName
+  )
+  if (existingImages.length > 0) {
+    console.log('Image with the same name already exists:', existingImages)
+  } else {
+    handleUploadResultImage(img)
+  }
+}
+
+function handleUploadResultImage(image) {
+  resultImageRepository
+    .create(image)
+    .then((response) => {
+      console.log(response.data)
+      const data = response.data
+      imageRepository
+        .upload(data.preSignedUrl, image.file)
+        .then((res) => {
+          console.log(res)
+          creationCampaignResult.value.images.push(data)
+          addImageToResultEditor(data)
+          // addToEdt(data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+        .finally(() => {})
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+function onClickAddResultImage() {
+  resultImageInput.value.click()
+}
+
 function onClickAddResult() {
   isShowResultModal.value = !isShowResultModal.value
 }
 function cancelEnd() {
   creationCampaignResult.value = {
+    images: [],
     executeLocation: '',
     executeDate: '',
     content: '',
@@ -1171,6 +1591,7 @@ function handleResultCampaign() {
     .then((response) => {
       console.log(response.data)
       campaign.value = response.data
+      currentPreviewImage.value = campaign.value.images[0]
       cancelEnd()
     })
     .then((err) => {
@@ -1236,7 +1657,11 @@ const onMessageReceived = (topic, response) => {
   console.log(response)
 
   if (response.action === 'NEW_STATUS') {
-    campaign.value.currentStatus = response.data
+    campaign.value.currentStatus = response.data.currentStatus
+    if (response.data.result) {
+      campaign.value.result = response.data.result
+    }
+    currentPreviewImage.value = campaign.value.images[0]
   }
   if (response.action === 'NEW_DONATION') {
     if (campaign.value.id == response.data.campaign.id) {
@@ -1279,24 +1704,41 @@ const onMessageReceived = (topic, response) => {
     //add more donation
   }
   if (response.action === 'NEW_COMMENT') {
-    console.log('At new comment')
     if (commentsCurrentPage.value == 1) {
       comments.value = [response.data, ...comments.value]
       if (comments.value.length > commentsPageSize.value) {
         comments.value.pop()
       }
-
-      commentsTotalElements.value += 1
-      commentsTotalPage.value = Math.round(commentsTotalElements.value / commentsPageSize.value)
-      if (commentsTotalElements.value % commentsPageSize.value != 0) {
+      if (commentsTotalElements.value % commentsPageSize.value == 0) {
         commentsTotalPage.value += 1
       }
+      commentsTotalElements.value += 1
+    } else {
+      getCommentOfCampaign()
     }
+  }
+  if (response.action === 'UPDATE_COMMENT') {
+    for (let index in comments.value) {
+      if (comments.value[index].id === response.data.id) {
+        comments.value[index].content = response.data.content
+        break
+      }
+    }
+  }
+  if (response.action === 'DELETE_COMMENT') {
+    if (
+      commentsTotalElements.value % commentsPageSize.value == 1 &&
+      commentsCurrentPage.value > 1
+    ) {
+      commentsCurrentPage.value -= 1
+    }
+    getCommentOfCampaign()
   }
 
   if (response.action == 'NEW_DETAIL') {
     if (campaign.value.id == response.data.id) {
       campaign.value = response.data
+      currentPreviewImage.value = campaign.value.images[0]
     }
   }
 }

@@ -3,6 +3,7 @@
     class="flex fixed z-10 items-center w-full py-6 shadow-lg md:px-8 px-4 gap-4 bg-white max-h-20"
   >
     <app-logo :to="'home-route'" class="lg:basis-1/5 text-4xl basis-2/5"></app-logo>
+
     <nav-bar
       :routes="userRoutes"
       :activeRoute="activeRoute"
@@ -11,6 +12,7 @@
       :navItemStyle="'text-lg font-bold'"
       class="basis-3/5 justify-center hidden lg:flex"
     ></nav-bar>
+
     <div class="lg:basis-1/5 basis-3/5 min-w-72 hidden lg:flex">
       <div
         class="flex gap-2 md:gap-4 lg:justify-center justify-end"
@@ -95,7 +97,7 @@
             :class="userInfor ? 'flex flex-col ' : 'hidden'"
           >
             <base-link
-              :to="'home-route'"
+              :to="'user-detail-route'"
               :title="userInfor.email"
               :defaultStyle="'bg-white text-black justify-center'"
             ></base-link>
@@ -148,6 +150,7 @@ export default {
     function handleLogout() {
       authStore.currentUser = ''
       console.log(authStore.currentUser)
+      router.replace({ name: 'home-route' })
     }
     return {
       userRoutes,

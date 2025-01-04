@@ -1,6 +1,7 @@
 // import Repository from './Repository'
 // const resource = '/images'
 import axios from 'axios'
+// upload ảnh lên s3 cloud
 export default {
   // async getPreSigned(payload) {
   //   return Repository.post(`${resource}`, payload).then((response) => {

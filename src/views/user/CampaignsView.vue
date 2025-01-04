@@ -23,11 +23,20 @@
     <section
       class="flex w-full max-w-screen-xl items-center justify-between gap-4 relative z-0 flex-col lg:flex-row"
     >
-      <base-input
-        :type="'text'"
-        :style="'rounded-md border-2 border-solid w-96 h-10 px-3 mt-2 focus:outline-pink-300 '"
-        :placeholder="'Tìm kiếm'"
-      ></base-input>
+      <div class="relative flex items-center gap-4">
+        <base-input
+          :type="'text'"
+          :style="'rounded-md border-2 border-solid w-96 h-10 px-3 mt-2 focus:outline-pink-300 '"
+          :placeholder="'Tìm kiếm'"
+          v-model:data="searchKeyWord"
+        ></base-input>
+        <base-button
+          :type="'button'"
+          :content="'Tìm kiếm'"
+          :style="' max-w-60 py-2 font-bold text-sm border-4 border-pink-500  h-10 bg-white text-pink-500  rounded-md px-4'"
+          @click="searchCampaign"
+        ></base-button>
+      </div>
 
       <div class="flex gap-4 mt-4 flex-wrap justify-center">
         <div
@@ -56,7 +65,7 @@
       >
         <!-- card-image -->
         <template v-slot:card-image>
-          <div class="relative -z-0">
+          <div class="relative">
             <img :src="campaign.images[0].url" class="h-80 w-full object-cover rounded-t-md" />
             <div class="absolute top-2 right-2 px-4 py-2 text-white bg-pink-500 rounded-lg">
               {{ campaign.category.name }}
@@ -66,7 +75,7 @@
         <!-- card title -->
         <template v-slot:card-title>
           <div class="px-4">
-            <p class="text-lg hover:text-pink-600 font-bold line-clamp-2">
+            <p class="text-lg hover:text-pink-600 font-bold line-clamp-2 min-h-16">
               {{ campaign.title }}
             </p>
           </div>
@@ -185,7 +194,6 @@ const campaignCategoryRepository = RepositoryFactory.get('categories')
 const pageSize = ref(6)
 const currentPage = ref(1)
 
-const search = ref('')
 const totalPage = ref('')
 const totalRecord = ref('')
 const currentDateTime = ref(new Date())
@@ -238,10 +246,6 @@ const pageParams = computed(() => {
   return `page=${currentPage.value - 1}&pageSize=${pageSize.value}`
 })
 
-const searchKeyWordParams = computed(() => {
-  return search.value.trim() ? `searchKeyWord=${search.value}` : ''
-})
-
 const stateParams = computed(() => {
   return `state=${currentState.value}`
 })
@@ -263,9 +267,9 @@ async function getAllCategories() {
 
 function getAllCampaigns() {
   let params = pageParams.value
-  if (searchKeyWordParams.value) {
-    params += '&' + searchKeyWordParams.value
-  }
+  // if (searchKeyWordParams.value) {
+  //   params += '&' + searchKeyWordParams.value
+  // }
   console.log(currentCategory.value.id)
   params += `&categoryId=${currentCategory.value.id}`
 
@@ -336,6 +340,10 @@ const campaignsWithRemainingTime = computed(() => {
     const endDate = new Date(`${campaign.endDate} ${campaign.endTime}:00`)
     const timeDiff = endDate - currentDateTime.value
 
+    const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24))
+    const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60))
+
     if (timeDiff <= 0) {
       return {
         ...campaign,
@@ -348,10 +356,6 @@ const campaignsWithRemainingTime = computed(() => {
       }
     }
 
-    const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24))
-    const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60))
-
     return {
       ...campaign,
       remainingTime: {
@@ -363,7 +367,16 @@ const campaignsWithRemainingTime = computed(() => {
     }
   })
 })
-//
+
+//search
+
+const searchKeyWord = ref('')
+function searchCampaign() {
+  if (searchKeyWord.value) {
+    router.push({ name: `campaign-search-route`, params: { keyword: `${searchKeyWord.value}` } })
+  }
+}
+
 const socketStore = useSocketStore()
 
 const canSubcribeTopic = computed(() => {

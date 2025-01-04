@@ -4,7 +4,6 @@
       <base-table
         :table-name="'Tất cả người dùng'"
         :page-size-options="pageSizeOptions"
-        :filterLabel="'Lọc người dùng'"
         :groupFilters="groupFilters"
         :createPageLink="'admin-create-user-route'"
         :detailPageLink="'admin-user-detail-route'"
@@ -100,29 +99,7 @@ const recordProperties = ref([
   'Điện thoại',
   'Bị khóa',
 ])
-const recordData = ref([
-  // {
-  //   id: 1,
-  //   email: 'chauminhtran2@gmail.com',
-  //   firstName: 'Trần',
-  //   lastName: 'Minh Châu',
-  //   blocked: 'true',
-  // },
-  // {
-  //   id: 1,
-  //   email: 'chauminhtran2@gmail.com',
-  //   firstName: 'Trần',
-  //   lastName: 'Minh Châu',
-  //   blocked: 'true',
-  // },
-  // {
-  //   id: 1,
-  //   email: 'chauminhtran2@gmail.com',
-  //   firstName: 'Trần',
-  //   lastName: 'Minh Châu',
-  //   blocked: 'true',
-  // },
-])
+const recordData = ref([])
 async function getAllUsers() {
   let params = pageParams.value
   if (searchKeyWordParams.value) {

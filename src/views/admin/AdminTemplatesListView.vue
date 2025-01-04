@@ -4,7 +4,8 @@
       <base-table
         :table-name="'Tất cả khoản quyên góp'"
         :page-size-options="pageSizeOptions"
-        :detailPageLink="'admin-user-detail-route'"
+        :createPageLink="'admin-create-templates-route'"
+        :detailPageLink="'admin-template-detail-route'"
         :table-content-style="'text-start border min-w-full'"
         v-model:pageSize="pageSize"
         v-model:search="search"
@@ -23,8 +24,7 @@
 import BaseTable from '@/components/BaseTable.vue'
 import { RepositoryFactory } from '@/repository/RepositoryFactory'
 import { computed, onBeforeMount, ref, watch } from 'vue'
-const donationsRepository = RepositoryFactory.get('donations')
-
+const notificationTemplateRepository = RepositoryFactory.get('notificationTemplates')
 const pageSizeOptions = [
   {
     id: 10,
@@ -45,42 +45,30 @@ const pageSizeOptions = [
 const pageSize = ref(pageSizeOptions[0].value)
 const search = ref('')
 onBeforeMount(() => {
-  getAllDonations()
+  getAllTemplates()
 })
 
 const currentPage = ref(1)
 const totalPage = ref(100)
 const totalRecord = ref(100)
 
-const recordProperties = ref([
-  'id',
-  'Số tiền',
-  'Trạng thái',
-
-  'Chiến dịch',
-  'Người ủng hộ',
-  'Ẩn danh',
-])
+const recordProperties = ref(['id', 'Tên'])
 const recordData = ref([])
-async function getAllDonations() {
+async function getAllTemplates() {
   let params = pageParams.value
   if (searchKeyWordParams.value) {
     params += '&' + searchKeyWordParams.value
   }
-  donationsRepository.getAll(params).then((response) => {
+  notificationTemplateRepository.getAll(params).then((response) => {
     console.log(response.data)
     const data = response.data
     totalPage.value = data.totalPages
     totalRecord.value = data.totalElements
     console.log(response.data.content)
-    const records = data.content.map((donation) => {
+    const records = data.content.map((template) => {
       return {
-        id: donation.id,
-        amount: donation.amount,
-        state: donation.state,
-        campaign: donation.campaign.title,
-        donor: donation.donor.email,
-        isAnonymous: donation.isAnonymous,
+        id: template.id,
+        name: template.name,
       }
     })
     recordData.value = records
@@ -96,15 +84,15 @@ const searchKeyWordParams = computed(() => {
 })
 
 watch(currentPage, () => {
-  getAllDonations()
+  getAllTemplates()
 })
 watch(search, () => {
   currentPage.value = 1
-  getAllDonations()
+  getAllTemplates()
 })
 watch(pageSize, () => {
   currentPage.value = 1
-  getAllDonations()
+  getAllTemplates()
 })
 </script>
 

@@ -24,7 +24,7 @@
           v-model:filterData="filterModel"
         ></base-filter>
       </div>
-      <div>
+      <div v-if="props.createPageLink">
         <base-link
           :to="props.createPageLink"
           :title="'Tạo mới'"

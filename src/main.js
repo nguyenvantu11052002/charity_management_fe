@@ -15,15 +15,8 @@ import FilterIcon from './components/icons/FilterIcon.vue'
 import RoleIcon from './components/icons/RoleIcon.vue'
 import CategoriesIcon from './components/icons/CategoriesIcon.vue'
 import NotificationsIcon from './components/icons/NotificationsIcon.vue'
-// import HomeIcon from './icons/HomeIcon.vue'
-// import UsersIcon from './icons/UsersIcon.vue'
-// import CampaignsIcon from './icons/CampaignsIcon.vue'
-// import DonationsIcon from './icons/DonationsIcon.vue'
-// import process from 'process/browser'
+import NotificationTemplatesIcon from './components/icons/NotificationTemplatesIcon.vue'
 
-// window.process = process
-
-// window.global = window
 const pinia = createPinia()
 const app = createApp(App)
 
@@ -39,6 +32,7 @@ app
   .component('filters-icon', FilterIcon)
   .component('role-icon', RoleIcon)
   .component('categories-icon', CategoriesIcon)
+  .component('notificationTemplates-icon', NotificationTemplatesIcon)
   .component('notifications-icon', NotificationsIcon)
 app.mount('#app')
 

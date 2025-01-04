@@ -1,6 +1,8 @@
 import axios from 'axios'
 import AuthenticationRepository from './AuthenticationRepository'
 import LocalStorageRepository from './LocalStorageRepository'
+import router from '@/router'
+import { useRouter } from 'vue-router'
 // import { useAuthStore } from '@/store/authStore'
 // import { useRouter } from 'vue-router'
 
@@ -43,14 +45,15 @@ Repository.interceptors.response.use(
     ) {
       originalConfig._retry = true
       // const authStore = useAuthStore()
-      // const router = useRouter()
+
       return AuthenticationRepository.refresh(LocalStorageRepository.getRefreshToken())
         .then((response) => {
           LocalStorageRepository.saveUser(JSON.stringify(response.data.data))
           return Repository(originalConfig)
         })
-        .catch(err => {
-          console.log("error after retry: "+ err)
+        .catch((err) => {
+          console.log('error after retry: ' + err)
+          router.replace({ name: 'login-route' })
           return Promise.reject(err)
         })
     }

@@ -38,7 +38,7 @@
               <div class="flex items-center gap-2">
                 <img
                   :src="campaignWithRemainingTime.creator.avatar"
-                  class="w-10 h-10 rounded-full"
+                  class="w-12 h-12 rounded-full"
                   v-if="campaignWithRemainingTime.creator ? true : false"
                 />
 
@@ -190,7 +190,6 @@
       >
         <div class="flex flex-col flex-1 gap-4">
           <div v-for="comment in comments" :key="comment.id" class="flex gap-4">
-            <!-- <div class="text-xs text-gray-500">{{ comment.createdAt }}</div> -->
             <div class="flex items-center gap-2">
               <img
                 :src="comment.user.avatar"
@@ -204,14 +203,67 @@
                 v-else
               ></avatar-icon>
             </div>
-            <div class="flex-col">
+
+            <div class="flex-col" :class="currentEditComment.id === comment.id ? 'flex' : 'hidden'">
+              <div class="bg-indigo-500 rounded-xl p-4 flex items-center">
+                <div class="flex items-center bg-white rounded-lg p-1 gap-2">
+                  <input
+                    v-model="currentEditComment.content"
+                    class="px-2 rounded-md h-10 w-full border"
+                  />
+                  <div class="" @click="onClickSaveEditComment">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="size-8 hover:text-pink-500 cursor-pointer"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="hover:text-pink-500 cursor-pointer px-2 font-semibold"
+                @click="onClickCancelEditComment(comment)"
+              >
+                Hủy
+              </div>
+            </div>
+
+            <div class="flex-col" :class="currentEditComment.id === comment.id ? 'hidden' : 'flex'">
               <div class="bg-indigo-500 rounded-xl p-2">
                 <div class="text-white font-bold">{{ comment.user.email }}</div>
                 <div class="p-1 text-white">
                   {{ comment.content }}
                 </div>
               </div>
-              <div>{{ formatDate(comment.createdAt) }}</div>
+              <div class="flex text-sm gap-4 px-2">
+                <div>{{ comment.createdAt }}</div>
+                <div
+                  class="flex gap-4 px-2 items-center font-semibold"
+                  v-if="authStore.currentUser && comment.user.id === authStore.currentUser.infor.id"
+                >
+                  <div
+                    class="hover:text-pink-500 cursor-pointer"
+                    @click="onClickEditComment(comment)"
+                  >
+                    Chỉnh sửa
+                  </div>
+                  <div
+                    class="hover:text-pink-500 cursor-pointer"
+                    @click="onClickDeleteComment(comment)"
+                  >
+                    Xóa
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -244,6 +296,7 @@
           :type="'number'"
           :style="'rounded-md border-2 border-solid h-10 px-3 mt-2 focus:outline-pink-300'"
           v-model:data="donation.amount"
+          v-model:error="donationError.amount"
         ></base-input>
         <div class="flex gap-2">
           <input type="checkbox" :value="donation.isAnonymous" v-model="donation.isAnonymous" />
@@ -270,6 +323,7 @@ import { RepositoryFactory } from '@/repository/RepositoryFactory'
 import { computed, onBeforeMount, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSocketStore } from '@/store/socketStore'
+import { useAuthStore } from '@/store/authStore'
 
 const router = useRouter()
 const route = useRoute()
@@ -277,10 +331,19 @@ const isLoading = ref(true)
 const isPayment = ref(false)
 const url = ref('')
 
+const authStore = useAuthStore()
+
 //list donations
 const donations = ref([])
 //create donation
 const donation = ref({
+  campaign: {
+    id: '',
+  },
+  isAnonymous: false,
+  amount: '',
+})
+const donationError = ref({
   campaign: {
     id: '',
   },
@@ -367,21 +430,31 @@ function onCancleDonate() {
   isPayment.value = !isPayment.value
 }
 function handleCreateDonation() {
-  donationsRepository
-    .create(donation.value)
-    .then((response) => {
-      console.log(response)
-      const data = response.data
-      const payment = data.payment
-      console.log(payment.vnpUrl)
-      url.value = payment.vnpUrl
-      window.location.href = payment.vnpUrl
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  const haveError = validateDonation()
+  if (!haveError) {
+    donationsRepository
+      .create(donation.value)
+      .then((response) => {
+        console.log(response)
+        const data = response.data
+        const payment = data.payment
+        console.log(payment.vnpUrl)
+        url.value = payment.vnpUrl
+        window.location.href = payment.vnpUrl
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 }
-function validateDonation() {}
+function validateDonation() {
+  let haveError = false
+  if (donation.value.amount < 10000) {
+    haveError = true
+    donationError.value.amount = 'Số tiền quyên góp ít nhất là 10.000đ'
+  }
+  return haveError
+}
 
 //logic getDonations
 const donationsCurrentPage = ref(1)
@@ -419,6 +492,7 @@ function handleCreateComment() {
       .create(creationComment.value)
       .then((response) => {
         console.log(response)
+        creationComment.value.content = ''
         // if (commentsCurrentPage.value == 1) {
         //   comments.value = [response.data, ...comments.value]
         //   if (comments.value.length > commentsPageSize.value) {
@@ -446,6 +520,47 @@ function validateComment() {
   return haveError
 }
 const commentError = ref({})
+//logic edit, delete comment
+const currentEditComment = ref({})
+function onClickEditComment(comment) {
+  currentEditComment.value = {
+    ...comment,
+  }
+}
+
+function onClickDeleteComment(comment) {
+  commentRepository
+    .delete(comment.id)
+    .then((response) => {
+      console.log(response)
+      getCommentOfCampaign()
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+function onClickCancelEditComment() {
+  currentEditComment.value = {}
+}
+
+function onClickSaveEditComment() {
+  commentRepository
+    .update(currentEditComment.value.id, currentEditComment.value)
+    .then((response) => {
+      console.log(response)
+      for (let index in comments.value) {
+        if (comments.value[index].id === response.data.id) {
+          comments.value[index].content = response.data.content
+          break
+        }
+      }
+      onClickCancelEditComment()
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
 
 //logic getComments
 const commentsCurrentPage = ref(1)
@@ -514,17 +629,6 @@ const campaignWithRemainingTime = computed(() => {
   }
   const endDate = new Date(`${campaign.value.endDate} ${campaign.value.endTime}:00`)
   const timeDiff = endDate - currentDateTime.value
-  if (timeDiff <= 0) {
-    return {
-      ...campaign.value,
-      remainingTime: {
-        days: 0,
-        hours: 0,
-        minutes: 0,
-        displayText: 'Đã kết thúc',
-      },
-    }
-  }
 
   const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24))
   const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
@@ -574,7 +678,10 @@ const onMessageReceived = (topic, response) => {
   console.log(response)
 
   if (response.action === 'NEW_STATUS') {
-    campaign.value.currentStatus = response.data
+    campaign.value.currentStatus = response.data.currentStatus
+    if (response.data.result) {
+      campaign.value.result = response.data.result
+    }
   }
   if (response.action === 'NEW_DONATION') {
     if (campaign.value.id == response.data.campaign.id) {
@@ -608,17 +715,35 @@ const onMessageReceived = (topic, response) => {
       if (comments.value.length > commentsPageSize.value) {
         comments.value.pop()
       }
-
-      commentsTotalElements.value += 1
-      commentsTotalPage.value = Math.round(commentsTotalElements.value / commentsPageSize.value)
-      if (commentsTotalElements.value % commentsPageSize.value != 0) {
+      if (commentsTotalElements.value % commentsPageSize.value == 0) {
         commentsTotalPage.value += 1
       }
+      commentsTotalElements.value += 1
+    } else {
+      getCommentOfCampaign()
     }
+  }
+  if (response.action === 'UPDATE_COMMENT') {
+    for (let index in comments.value) {
+      if (comments.value[index].id === response.data.id) {
+        comments.value[index].content = response.data.content
+        break
+      }
+    }
+  }
+  if (response.action === 'DELETE_COMMENT') {
+    if (
+      commentsTotalElements.value % commentsPageSize.value == 1 &&
+      commentsCurrentPage.value > 1
+    ) {
+      commentsCurrentPage.value -= 1
+    }
+    getCommentOfCampaign()
   }
   if (response.action === 'NEW_DETAIL') {
     if (campaign.value.id == response.data.id) {
       campaign.value = response.data
+      currentPreviewImage.value = campaign.value.images[0]
     }
   }
 }

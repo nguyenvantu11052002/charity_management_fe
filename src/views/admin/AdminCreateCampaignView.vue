@@ -128,7 +128,7 @@
             @click="addImageToEdt"
           ></base-button>
           <Editor
-            api-key="ro1kh76z2gvuvctecqi2chda949fjai0uq5nqbe67v9qq9d4"
+            api-key="s8slp19bxol8ou5pyvsnvcqlul0r4ryt1fjvrsfnfuitkw7b"
             :init="{
               height: 1000,
               toolbar_mode: 'sliding',
@@ -147,8 +147,8 @@
 
         <base-button
           :type="'button'"
-          :content="'Gửi yêu cầu'"
-          :style="' max-w-64 py-2 font-bold text-sm text-white h-10 bg-pink-500 hover:bg-pink-600 rounded-md'"
+          :content="'Lưu'"
+          :style="' max-w-64 py-2 font-bold text-sm text-white h-10 bg-green-500 hover:bg-green-600 rounded-md'"
           @click="handleSave"
         ></base-button>
       </form>
@@ -280,8 +280,6 @@ function deleteImageOfContent(image) {
 const currentPreviewImage = ref()
 
 const fileInput = ref('')
-
-function handleRightClickImage() {}
 
 function addMoreImage() {
   fileInput.value.click()

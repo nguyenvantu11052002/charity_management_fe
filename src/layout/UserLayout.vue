@@ -9,9 +9,8 @@
 <script>
 import UserFooter from '@/components/UserFooter.vue'
 import UserHeader from '../components/UserHeader.vue'
-import BaseBreadCrumb from '@/components/BaseBreadCrumb.vue'
 export default {
-  components: { UserHeader, UserFooter, BaseBreadCrumb },
+  components: { UserHeader, UserFooter },
 }
 </script>
 
