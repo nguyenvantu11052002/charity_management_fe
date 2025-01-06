@@ -61,7 +61,7 @@
               Đã kết thúc
             </div> -->
             <div class="bg-amber-500 rounded-lg p-1 text-white text-xs">
-              {{ campaign.currentStatus }}
+              {{ toDisplayTextState(campaign.currentStatus) }}
             </div>
           </div>
           <div class="gap-2 flex flex-col">
@@ -167,6 +167,20 @@ async function searchCampaign() {
     .catch((err) => {
       console.log(err)
     })
+}
+function toDisplayTextState(state) {
+  if (state === 'SCHEDULED') {
+    return 'Sắp diễn ra'
+  }
+  if (state === 'STARTED') {
+    return 'Đang diễn ra'
+  }
+  if (state === 'STOPPED') {
+    return 'Đang tạm dừng'
+  }
+  if (state === 'ENDED') {
+    return 'Đã kết thúc'
+  }
 }
 </script>
 

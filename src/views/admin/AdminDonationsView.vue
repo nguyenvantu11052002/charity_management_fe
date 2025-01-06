@@ -4,7 +4,6 @@
       <base-table
         :table-name="'Tất cả khoản quyên góp'"
         :page-size-options="pageSizeOptions"
-        :detailPageLink="'admin-user-detail-route'"
         :table-content-style="'text-start border min-w-full'"
         v-model:pageSize="pageSize"
         v-model:search="search"

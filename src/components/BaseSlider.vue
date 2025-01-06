@@ -79,6 +79,7 @@ const slider = ref([
 // Auto-slide functionality
 const autoSlideInterval = ref(null)
 
+// tự thay đổi sau 5s
 const startAutoSlide = () => {
   autoSlideInterval.value = setInterval(() => {
     currentShowSlider.value = (currentShowSlider.value % slider.value.length) + 1

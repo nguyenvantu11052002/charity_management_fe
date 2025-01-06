@@ -71,4 +71,9 @@ export default {
       return response.data
     })
   },
+  async statistic() {
+    return Repository.get(`${resource}/statistic`).then((response) => {
+      return response.data
+    })
+  },
 }

@@ -195,6 +195,7 @@ async function updateTemplate() {
         template.value = response.data
         template.value.dataForm = JSON.parse(response.data.dataForm)
         isNonEditTemplate.value = true
+        onClickCancelEdit()
       })
       .catch((err) => {
         console.log(err)

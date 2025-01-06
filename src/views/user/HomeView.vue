@@ -41,7 +41,7 @@
 
           <!-- card-content -->
           <template v-slot:card-content>
-            <div class="flex items-center justify-between flex-wrap gap-4">
+            <div class="flex items-center justify-between flex-wrap">
               <!-- người tạo -->
               <div class="flex items-center gap-2">
                 <img :src="campaign.creator.avatar" class="w-10 h-10 rounded-full" />
@@ -134,6 +134,7 @@ const socketStore = useSocketStore()
 
 onBeforeMount(async () => {
   console.log('OnBefore Mount')
+  // HAND SHAKE
   if (!socketStore.isConnected) {
     await socketStore.connect()
   }
@@ -153,7 +154,9 @@ onUnmounted(() => {
 function formatCurrency(value) {
   return new Intl.NumberFormat('vi-VN').format(value)
 }
-
+// CONNECT SOCKET
+// LAY DANH SACH CAMPAIGN
+//
 async function getNewStartedCampampaign() {
   isLoading.value = true
   campaignRepository
@@ -223,6 +226,8 @@ const canSubcribeTopic = computed(() => {
   return socketStore.isConnected && isLoading.value == false
 })
 
+//cansubcribe topic
+// null => false => fetch data thành công => isLoading = false, isconnected = true => true
 watch(canSubcribeTopic, (newvalue, oldValue) => {
   console.log('Change cansubcrie topic')
   if (newvalue) {
@@ -232,11 +237,19 @@ watch(canSubcribeTopic, (newvalue, oldValue) => {
 
 function handleSubcribe() {
   if (!socketStore.subs['/topic/campaigns/STARTED']) {
+    //có campaign nào chuyển đổi từ trạng thái khác sang started không
     socketStore.subscribe('/topic/campaigns/STARTED', onMessageReceived)
   }
+
   for (const cp of campaigns.value) {
+    // kiểm tra trạng thái subcribe đến topic này hay chưa
     if (!socketStore.subs['/topic/campaigns/' + cp.id]) {
+      //topic/campaigns/{id} => theo dõi thay đổi thông tin của 1 campaign
+      // action => NEW DETAIL
+      //theo dõi trạng thại
+      // action NEW STATUS started => '/topic/campaigns/1 => action: NEW_STATUS, data
       socketStore.subscribe('/topic/campaigns/' + cp.id, onMessageReceived)
+      //topic/campaings/{id}/donations/ACCEPT => theo dõi các khoản quyên góp đã được thanh toán hay trạng thái accept
       socketStore.subscribe('/topic/campaigns/' + cp.id + '/donations/ACCEPT', onMessageReceived)
     } else {
       console.log('topic subcribed')
@@ -244,9 +257,11 @@ function handleSubcribe() {
   }
 }
 
+// Xử lý dữ liệu mới của websocket khi server gửi sự kiện mới
 const onMessageReceived = (topic, response) => {
   console.log(topic)
   console.log(response)
+
   if (response.action === 'NEW_CAMPAIGN') {
     console.log('In new Campaign')
     const newCampaigns = []
@@ -272,7 +287,7 @@ const onMessageReceived = (topic, response) => {
     }
     getNewStartedCampampaign()
   }
-  if (response.action == 'NEW_DONATION') {
+  if (response.action === 'NEW_DONATION') {
     const campaignId = topic.split('/')[3]
     for (const campaign of campaigns.value) {
       if (campaign.id == campaignId) {

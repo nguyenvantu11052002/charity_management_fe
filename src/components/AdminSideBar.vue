@@ -57,7 +57,7 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-col w-full border-t border-gray-500 mt-4">
+    <div class="flex-col w-full border-t border-gray-500 mt-4 hidden md:flex">
       <base-link
         :to="'user-detail-route'"
         :title="userInfor.email"
