@@ -6,6 +6,7 @@ import CommentRepository from './CommentRepository'
 import DonationsRepository from './DonationsRepository'
 import ImageRepository from './ImageRepository'
 import LocalStorageRepository from './LocalStorageRepository'
+import NotificationRepository from './NotificationRepository'
 import NotificationTemplateRepository from './NotificationTemplateRepository'
 import PaymentRepository from './PaymentRepository'
 import ResultImageRepository from './ResultImageRepository'
@@ -27,7 +28,7 @@ const repositories = {
   campaignImages: CampaignImageRepository,
   resultImages: ResultImageRepository,
   notificationTemplates: NotificationTemplateRepository,
-  // notifications: NotificationRepository,
+  notifications: NotificationRepository,
 }
 
 export const RepositoryFactory = {

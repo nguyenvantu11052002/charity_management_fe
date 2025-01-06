@@ -332,7 +332,7 @@ const router = createRouter({
         {
           path: 'notifications',
           name: 'admin-notifications-route',
-          component: AdminDonationsView,
+          component: AdminNotificationView,
           meta: {
             order: 8,
             layout: 'admin',
